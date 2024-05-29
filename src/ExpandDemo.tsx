@@ -1,9 +1,11 @@
 import { Button, Form, Typography } from 'antd';
-import { useExpand,useWebApp } from '@vkruglikov/react-telegram-web-app';
+import {useExpand, WebAppProvider} from '@vkruglikov/react-telegram-web-app';
+import { useInitData } from "@vkruglikov/react-telegram-web-app";
 
 const ExpandDemo = () => {
   const [isExpanded, expand] = useExpand();
-  const idd = useWebApp().initData.user.id;
+
+  const [initDataUnsafe] = useInitData();
   return (
     <>
       <Typography.Title level={3}>useExpand</Typography.Title>
@@ -14,7 +16,7 @@ const ExpandDemo = () => {
         autoComplete="off"
       >
         <Form.Item name="isExpanded">
-          <Typography.Text>{idd} isExpanded: {`${isExpanded}`}</Typography.Text>
+          <Typography.Text>{initDataUnsafe?.user?.id} isExpanded: {`${isExpanded}`}</Typography.Text>
         </Form.Item>
         <Form.Item>
           <Button block type="primary" onClick={expand}>
