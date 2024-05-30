@@ -1,6 +1,6 @@
 import React from 'react'
 
-const TapPage = ({socket, userId} : any) => {
+const TapPage = ({userId} : any) => {
   return (
     <div style={{color: 'red'}}>TapPage: {userId}</div>
   )
