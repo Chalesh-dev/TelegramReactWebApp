@@ -34,7 +34,6 @@ const TelegramProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <TelegramContext.Provider value={value}>
-        <p style={{ color: "red" }}>{initDataUnsafe?.user?.id}</p>
       {children}
     </TelegramContext.Provider>
   );

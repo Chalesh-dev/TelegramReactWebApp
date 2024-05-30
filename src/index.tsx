@@ -100,6 +100,7 @@ const App = () => {
     <WebAppProvider options={{ smoothButtonsTransition }}>
       <TelegramProvider>
         <p>thi is  demo ....</p>
+        <p style={{ color: "red" }}>{initDataUnsafe?.user?.id}</p>
         {/* <ExpandDemo /> */}
         {/* <p style={{ color: "red" }}>
           this is user_id: {initDataUnsafe?.user?.id}
