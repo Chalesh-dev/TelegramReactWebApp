@@ -98,7 +98,7 @@ const App = () => {
 
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
-      <TelegramProvider>
+      {/* <TelegramProvider> */}
         <p>thi is  demo ....</p>
         <p style={{ color: "red" }}>{initDataUnsafe?.user?.id}</p>
         {/* <ExpandDemo /> */}
@@ -108,7 +108,7 @@ const App = () => {
         {/* <DemoApp
         onChangeTransition={() => setSmoothButtonsTransition(state => !state)}
       /> */}
-      </TelegramProvider>
+      {/* </TelegramProvider> */}
     </WebAppProvider>
   );
 };
