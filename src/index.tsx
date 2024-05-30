@@ -121,6 +121,7 @@ const App = () => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
+          "info-user": telegramUserId,
         },
       });
       const user = await response.json();
@@ -132,9 +133,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    if (telegramUserId) {
-      getUserInfo();
-    }
+    getUserInfo();
   }, [telegramUserId]);
 
   return (
@@ -144,7 +143,13 @@ const App = () => {
           <Route path="/" element={<Navigate to="/tap" replace />} />
           <Route
             path="/tap"
-            element={<TapPage socket={socket} userId={telegramUserId} />}
+            element={
+              <TapPage
+                socket={socket}
+                userId={telegramUserId}
+                user={userInfo.current}
+              />
+            }
           />
         </Routes>
       </BrowserRouter>

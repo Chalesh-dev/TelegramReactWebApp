@@ -11,9 +11,10 @@ const last_energy_path = process.env.REACT_APP_URL + "api/data/get-data";
 interface TapPageProps {
   socket: any;
   userId: any;
+  user?: [] | undefined | null;
 }
 
-const TapPage = ({ socket, userId }: TapPageProps) => {
+const TapPage = ({ socket, userId, user }: TapPageProps) => {
   return (
     <RootLayout bg_img={bgImg}>
       <p className="text-red-500">salammmm : {userId}</p>
