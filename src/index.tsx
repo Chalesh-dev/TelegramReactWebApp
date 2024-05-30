@@ -114,7 +114,7 @@ const socket = io("https://socket.spxswap.com");
 
 const App = () => {
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
-  const [initDataUnsafe] = useInitData();
+  const [initDataUnsafe] = useInitData(true);
   const telegramUserId = initDataUnsafe?.user?.id;
   // const telegramUserId = 123456;
 
