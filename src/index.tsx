@@ -116,7 +116,7 @@ const App = () => {
   const [userTrophy, setUserTrophy] = useState<string>("");
   const [userMultiTap, setUserMultiTap] = useState<number>(0);
   const [maxEnergyLimit, setMaxEnergyLimit] = useState<number>(0);
-  const [enrgyFillSpeed, setEnergyFillSpeed] = useState<number>(0);
+  const [energyFillSpeed, setEnergyFillSpeed] = useState<number>(0);
   const [currentEnergy, setCurrentEnergy] = useState<number>(0);
 
   const getUserInfo = async () => {
@@ -136,10 +136,11 @@ const App = () => {
       setUserBalance(Number(user?.user_balance));
       setUserTrophy(user?.user_trophies);
       setUserMultiTap(Number(user?.UserMultiTap));
+      console.log("eer", user?.UserMultiTap);
+
       setMaxEnergyLimit(Number(user?.user_energy_limit));
       setEnergyFillSpeed(Number(user?.UserEnergySpeed));
       setCurrentEnergy(Number(user?.UserCurrentEnergy));
-
 
       // console.log("rtt", user?.user?.energy_many[0]);
 
@@ -173,7 +174,7 @@ const App = () => {
                 user_trophy={userTrophy}
                 userMultiTap={userMultiTap}
                 maxEnergyLimit={maxEnergyLimit}
-                energyFillSpeed={enrgyFillSpeed}
+                energyFillSpeed={energyFillSpeed}
                 currentEnergy={currentEnergy}
                 setCurrentEnergy={setCurrentEnergy}
               />

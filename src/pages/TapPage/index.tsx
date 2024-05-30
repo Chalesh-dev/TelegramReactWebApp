@@ -6,13 +6,6 @@ import Balance from "../../components/Balance/Balance";
 import CoinIcon from "../../components/Tap/CoinIcon";
 import ScoreBar from "../../components/Tap/ScoreBar";
 
-/**PATH */
-const energy_unit_path = process.env.REACT_APP_URL + "api/landing/info-energy";
-const coin_fill_speed_path =
-  process.env.REACT_APP_URL + "api/landing/info-recharging";
-const last_energy_path = process.env.REACT_APP_URL + "api/data/get-data";
-/**PATH */
-
 interface TapPageProps {
   socket: any;
   userId: any;
@@ -40,17 +33,17 @@ const TapPage: React.FC<TapPageProps> = ({
   currentEnergy,
   setCurrentEnergy,
 }) => {
-  // console.log(
-  //   userId,
-  //   "balance:",
-  //   userBalance,
-  //   "user_trophy:",
-  //   user_trophy,
-  //   "tapInfo:",
-  //   tapInfo,
-  //   "maxEnergyLimit:",
-  //   maxEnergyLimit
-  // );
+  console.log(
+    userId,
+    "balance:",
+    userBalance,
+    "user_trophy:",
+    user_trophy,
+    "tapInfo:",
+    userMultiTap,
+    "maxEnergyLimit:",
+    maxEnergyLimit
+  );
 
   useEffect(() => {
     socket.on("top", (data: any) => {
@@ -104,7 +97,7 @@ const TapPage: React.FC<TapPageProps> = ({
           console.log("data:", data);
         }
       );
-    //   // setBalance((prevBalance) => prevBalance + Number(user?.level?.unit));
+  //   //   // setBalance((prevBalance) => prevBalance + Number(user?.level?.unit));
   };
 
   return (
