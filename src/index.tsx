@@ -1,4 +1,10 @@
-import React, { DispatchWithoutAction, FC, useState } from "react";
+import React, {
+  DispatchWithoutAction,
+  FC,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import ReactDOM from "react-dom/client";
 import {
   useThemeParams,
@@ -101,9 +107,35 @@ const socket = "frrfr";
 
 const App = () => {
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
-
+  const [rootLoading, setRootLoading] = useState(false);
+  const userInfo = useRef(null);
   const [initDataUnsafe] = useInitData();
   const telegramUserId = initDataUnsafe?.user?.id;
+
+  const getUserInfo = async () => {
+    const path_url = process.env.REACT_APP_URL + "api/auth/login-register/";
+    console.log(path_url);
+    try {
+      const response = await fetch(path_url, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      const user = await response.json();
+      userInfo.current = user;
+      // setUser(userInfo);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (telegramUserId) {
+      getUserInfo();
+    }
+  }, [telegramUserId]);
 
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
