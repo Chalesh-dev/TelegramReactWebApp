@@ -5,6 +5,7 @@ import Loading from "../../components/LoadingComp/Loading";
 import Balance from "../../components/Balance/Balance";
 import CoinIcon from "../../components/Tap/CoinIcon";
 import ScoreBar from "../../components/Tap/ScoreBar";
+import { useLocation } from "react-router-dom";
 
 interface TapPageProps {
   socket: any;
@@ -33,6 +34,15 @@ const TapPage: React.FC<TapPageProps> = ({
   currentEnergy,
   setCurrentEnergy,
 }) => {
+  const location = useLocation();
+  const pathname = location.pathname.split("/")[1];
+
+  useEffect(() => {
+    if (pathname !== "tap") {
+      socket.emit("submit", "");
+    }
+  }, [pathname]);
+
   console.log(
     userId,
     "balance:",
@@ -45,57 +55,57 @@ const TapPage: React.FC<TapPageProps> = ({
     maxEnergyLimit
   );
 
-  // useEffect(() => {
-  //   socket.on("top", (data: any) => {
-  //     if (setUserBalance) {
-  //       setUserBalance((prevState) => (prevState ?? 0) + Number(data));
-  //     }
-  //     // scoreRef.current = data;
-  //     // setCurrentSpark((prevSpark) => Math.max(prevSpark - data, 0));
-  //   });
+  useEffect(() => {
+    socket.on("top", (data: any) => {
+      if (setUserBalance) {
+        setUserBalance((prevState) => (prevState ?? 0) + Number(data));
+      }
+      // scoreRef.current = data;
+      // setCurrentSpark((prevSpark) => Math.max(prevSpark - data, 0));
+    });
 
-  //   socket.on("energy", (data: any) => {
-  //     if (setCurrentEnergy) {
-  //       setCurrentEnergy(Number(data));
-  //     }
-  //   });
+    socket.on("energy", (data: any) => {
+      if (setCurrentEnergy) {
+        setCurrentEnergy(Number(data));
+      }
+    });
 
-  //   socket.emit(
-  //     "id",
-  //     {
-  //       id: userId,
-  //       limit: maxEnergyLimit,
-  //       speed: energyFillSpeed,
-  //       energy: currentEnergy,
-  //     },
-  //     (data: any) => {}
-  //   );
-  // }, [socket]);
+    socket.emit(
+      "id",
+      {
+        id: userId,
+        limit: maxEnergyLimit,
+        speed: energyFillSpeed,
+        energy: currentEnergy,
+      },
+      (data: any) => {}
+    );
+  }, [socket]);
 
-  // useEffect(() => {
-  //   socket.emit(
-  //     "id",
-  //     {
-  //       id: userId,
-  //       limit: maxEnergyLimit,
-  //       speed: energyFillSpeed,
-  //       energy: currentEnergy,
-  //     },
-  //     (data: any) => {}
-  //   );
-  // }, [maxEnergyLimit, energyFillSpeed]);
+  useEffect(() => {
+    socket.emit(
+      "id",
+      {
+        id: userId,
+        limit: maxEnergyLimit,
+        speed: energyFillSpeed,
+        energy: currentEnergy,
+      },
+      (data: any) => {}
+    );
+  }, [maxEnergyLimit, energyFillSpeed]);
 
   const handleCoinClick = () => {
-    // socket.emit(
-    //   "tap",
-    //   {
-    //     id: userId,
-    //     level: userMultiTap,
-    //   },
-    //   function (data: any) {
-    //     console.log("data:", data);
-    //   }
-    // );
+    socket.emit(
+      "tap",
+      {
+        id: userId,
+        level: userMultiTap,
+      },
+      function (data: any) {
+        console.log("data:", data);
+      }
+    );
     //   //   // setBalance((prevBalance) => prevBalance + Number(user?.level?.unit));
   };
 
