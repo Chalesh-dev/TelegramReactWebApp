@@ -40,26 +40,26 @@ const Balance = ({
           {description && <p className="pb-0 text-sm">{description}</p>}
           <div className="flex gap-2 items-center w-full justify-center">
             <img src="./images/coin-icon.png" alt="coin" />
-            {user?.loading ? (
+            {/* {user?.loading ? (
               <span className="text-3xl text-white font-bold">----</span>
             ) : (
               <span className="text-3xl text-white font-bold">
                 {balance} {stats && user?.balance > 0 && " T"}
               </span>
-            )}
+            )} */}
           </div>
           {cup && (
             <Link
               to={"/trophy"}
               className="flex justify-center items-center gap-2"
             >
-              <Trophy />
-              {user?.loadingTrophy ? (
+              {/* <Trophy /> */}
+              {/* {user?.loadingTrophy ? (
                 <div className="flex justify-center items-center">....</div>
               ) : (
                 user?.user_trophy
-              )}
-              <ArrowRight size={24} />
+              )} */}
+              {/* <ArrowRight size={24} /> */}
             </Link>
           )}
         </>
