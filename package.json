@@ -4,6 +4,7 @@
   "private": false,
   "dependencies": {
     "@react-icons/all-files": "^4.1.0",
+    "@tma.js/sdk-react": "^2.2.2",
     "@types/node": "^16.18.3",
     "@vkruglikov/react-telegram-web-app": "^2.1.1",
     "antd": "^5.0.1",

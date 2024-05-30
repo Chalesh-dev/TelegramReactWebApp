@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import bgImg from "../../assets/bg_images/bg-2.png";
 import RootLayout from "../../components/RootLayout/RootLayout";
 import Loading from "../../components/LoadingComp/Loading";
@@ -18,116 +18,63 @@ interface TapPageProps {
   userId: any;
   user?: any;
   user_balance?: number;
-  user_trophy?: any;
+  user_trophy?: string;
+  userMultiTap?: number;
+  maxEnergyLimit?: number;
+  userBalance?: number;
+  currentEnergy?: number;
+  energyFillSpeed?: number;
+  setUserBalance?: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentEnergy?: React.Dispatch<React.SetStateAction<number>>;
 }
-interface EnergyUnit {
-  size: number;
-}
-interface IncreaseSpeed {
-  unit: number;
-}
 
-const TapPage = ({ socket, userId, user, user_balance }: TapPageProps) => {
-  const [energyUnit, setEnergyUnit] = useState<EnergyUnit | null>(null);
-  const [increaseSpeed, setIncreaseSpeed] = useState<IncreaseSpeed | null>(
-    null
-  );
-  const [initialScore, setInitialScore] = useState(0);
-  const [currentScore, setCurrentScore] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [balance, setBalance] = useState<number | undefined>(user_balance);
-
-  const getEnergyUnit = async () => {
-    setLoading(true);
-    if (userId) {
-      try {
-        const response = await fetch(energy_unit_path, {
-          method: "GET",
-          headers: {
-            "Content-type": "application/json",
-            Accept: "application/json",
-            "info-user": userId,
-          },
-        });
-        const result = await response.json();
-        setEnergyUnit(result);
-        console.log("energy_unit", result);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.log("error2", error);
-      }
-    }
-  };
-
-  const getLastEnergy = async () => {
-    setLoading(true);
-    if (userId) {
-      try {
-        const response = await fetch(last_energy_path, {
-          method: "GET",
-          headers: {
-            "Content-type": "application/json",
-            Accept: "application/json",
-            // "info-user": user?.user?.uuid_name,
-            "info-user": userId,
-          },
-        });
-        const result = await response.json();
-        console.log("result", result);
-        setCurrentScore(Number(result?.energyLast));
-        setInitialScore(Number(result?.energyLast));
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.log("error2", error);
-      }
-    }
-  };
-
-  /**speed of increase or recharging speed */
-  const getRechargingSpeed = async () => {
-    setLoading(true);
-    if (userId) {
-      try {
-        const response = await fetch(coin_fill_speed_path, {
-          method: "GET",
-          headers: {
-            "Content-type": "application/json",
-            Accept: "application/json",
-            "info-user": userId,
-          },
-        });
-        const result = await response.json();
-        console.log("increase_speed", result);
-        setIncreaseSpeed(result); ////balanceRef
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.log("error2", error);
-      }
-    }
-  };
+const TapPage: React.FC<TapPageProps> = ({
+  socket,
+  userId,
+  userBalance,
+  setUserBalance,
+  user_trophy,
+  userMultiTap,
+  maxEnergyLimit,
+  energyFillSpeed,
+  currentEnergy,
+  setCurrentEnergy,
+}) => {
+  // console.log(
+  //   userId,
+  //   "balance:",
+  //   userBalance,
+  //   "user_trophy:",
+  //   user_trophy,
+  //   "tapInfo:",
+  //   tapInfo,
+  //   "maxEnergyLimit:",
+  //   maxEnergyLimit
+  // );
 
   useEffect(() => {
     socket.on("top", (data: any) => {
       console.log("ddddd", data);
-      setBalance((prevState) => (prevState ?? 0) + Number(data));
+      if (setUserBalance) {
+        setUserBalance((prevState) => (prevState ?? 0) + Number(data));
+      }
       // scoreRef.current = data;
       // setCurrentSpark((prevSpark) => Math.max(prevSpark - data, 0));
     });
 
     socket.on("energy", (data: any) => {
-      setCurrentScore(Number(data));
+      if (setCurrentEnergy) {
+        setCurrentEnergy(Number(data));
+      }
     });
 
     socket.emit(
       "id",
       {
-        id: user?.userTeleId,
-        limit: Number(energyUnit?.size),
-        speed: Number(increaseSpeed?.unit),
-        energy: Number(currentScore),
+        id: userId,
+        limit: maxEnergyLimit,
+        speed: energyFillSpeed,
+        energy: currentEnergy
       },
       (data: any) => {}
     );
@@ -137,60 +84,53 @@ const TapPage = ({ socket, userId, user, user_balance }: TapPageProps) => {
     socket.emit(
       "id",
       {
-        id: user?.userTeleId,
-        limit: Number(energyUnit?.size),
-        speed: Number(increaseSpeed?.unit),
-        energy: Number(initialScore),
+        id: userId,
+        limit: maxEnergyLimit,
+        speed: energyFillSpeed,
+        energy: currentEnergy
       },
       (data: any) => {}
     );
-  }, [user?.userTeleId, energyUnit?.size, increaseSpeed?.unit, initialScore]);
-
-  useEffect(() => {
-    getEnergyUnit();
-    getRechargingSpeed();
-    getLastEnergy();
-  }, []);
+  }, [maxEnergyLimit, energyFillSpeed]);
 
   const handleCoinClick = () => {
-    socket.emit(
-      "tap",
-      {
-        id: user?.userTeleId,
-        level: user?.level?.title,
-      },
-      function (data: any) {
-        console.log("data:", data);
-      }
-    );
-    // setBalance((prevBalance) => prevBalance + Number(user?.level?.unit));
+      socket.emit(
+        "tap",
+        {
+          id: userId,
+          level: userMultiTap
+        },
+        function (data: any) {
+          console.log("data:", data);
+        }
+      );
+    //   // setBalance((prevBalance) => prevBalance + Number(user?.level?.unit));
   };
 
   return (
     <>
-      {loading ? (
+      {/* {loading ? (
         <Loading />
-      ) : (
+      ) : ( */}
         <RootLayout bg_img={bgImg}>
           <div className="flex flex-col items-center justify-around w-full h-full">
             {/* <p className="text-red-500">{userId}</p>
             <p className="text-white">amount:{user?.user?.t_balance[0]?.amount}</p>
             <p>status:{user?.status}</p> */}
 
-            <Balance balance={balance} user_trophy={"metal"} cup={true} />
+            <Balance balance={userBalance} user_trophy={user_trophy} cup={true} />
 
             <CoinIcon
-              balance={balance}
-              increment={user?.level?.unit}
-              // increment={scoreRef.current}
+              balance={userBalance}
+              increment={userMultiTap}
               onCoinClick={handleCoinClick}
-              currentSpark={currentScore}
+              currentSpark={currentEnergy}
             />
 
             <ScoreBar
-              maxLimitSpark={energyUnit?.size}
-              incrementSparkNumber={Number(increaseSpeed?.unit)}
-              currentSpark={currentScore}
+              maxLimitSpark={maxEnergyLimit}
+              incrementSparkNumber={userMultiTap}
+              currentSpark={currentEnergy}
               // setCurrentSpark={setCurrentSpark}
             />
 
@@ -206,7 +146,7 @@ const TapPage = ({ socket, userId, user, user_balance }: TapPageProps) => {
             {/* )} */}
           </div>
         </RootLayout>
-      )}
+      {/* )} */}
     </>
   );
 };

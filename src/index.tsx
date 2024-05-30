@@ -18,7 +18,8 @@ import ShowPopupDemo from "./ShowPopupDemo";
 import HapticFeedbackDemo from "./HapticFeedbackDemo";
 import ScanQrPopupDemo from "./ScanQrPopupDemo";
 import useBetaVersion from "./useBetaVersion";
-import { useInitData } from "@vkruglikov/react-telegram-web-app";
+// import { useInitData } from "@vkruglikov/react-telegram-web-app";
+import { useInitData } from "@tma.js/sdk-react";
 import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 import TapPage from "./pages/TapPage";
 import { io } from "socket.io-client";
@@ -101,18 +102,22 @@ const root = ReactDOM.createRoot(
 
 /**socket */
 // const socket = socketIO.connect("https://socket.spxswap.com");
-const socket = io("https://socket.spxswap.com");
-// const socket = "frrfr";
+// const socket = io("https://socket.spxswap.com");
+const socket = "frrfr";
 
 const App = () => {
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
+  // const [initDataUnsafe] = useInitData();
+  // const telegramUserId = initDataUnsafe?.user?.id;
+  const telegramUserId = 123456;
+
   const [rootLoading, setRootLoading] = useState(false);
-  const userInfo = useRef(null);
-  const user_balance = useRef(0);
-  const user_trophy = useRef([]);
-  const [initDataUnsafe] = useInitData();
-  const telegramUserId = initDataUnsafe?.user?.id;
-  // const telegramUserId = 123456;
+  const [userBalance, setUserBalance] = useState<number>(0);
+  const [userTrophy, setUserTrophy] = useState<string>("");
+  const [userMultiTap, setUserMultiTap] = useState<number>(0);
+  const [maxEnergyLimit, setMaxEnergyLimit] = useState<number>(0);
+  const [enrgyFillSpeed, setEnergyFillSpeed] = useState<number>(0);
+  const [currentEnergy, setCurrentEnergy] = useState<number>(0);
 
   const getUserInfo = async () => {
     const path_url = process.env.REACT_APP_URL + "api/auth/login-register/";
@@ -124,16 +129,30 @@ const App = () => {
           "Content-Type": "application/json",
         },
       });
-      const user = await response.json();
-      userInfo.current = user;
-      console.log('errr',user);
-      user_balance.current = user?.user?.t_balance[0]?.amount;
-      user_trophy.current = user?.user?.trophy_many[0];
+      const { user } = await response.json();
+      // userInfo.current = user;
+      console.log("pppp", user);
+
+      setUserBalance(Number(user?.user_balance));
+      setUserTrophy(user?.user_trophies);
+      setUserMultiTap(Number(user?.UserMultiTap));
+      setMaxEnergyLimit(Number(user?.user_energy_limit));
+      setEnergyFillSpeed(Number(user?.UserEnergySpeed));
+      setCurrentEnergy(Number(user?.UserCurrentEnergy));
+
+
+      // console.log("rtt", user?.user?.energy_many[0]);
+
+      // user_trophy.current = user?.user?.trophy_many[0];
+      // console.log("eerrrt", user?.user?.multi_touche_many[0]);
+
+      // tapInfo.current = user?.user?.multi_touche_many[0];
+      // maxEnergyLimit.current = user?.user?.energy_many[0];
     } catch (error) {
       console.log(error);
     }
   };
-  
+
   useEffect(() => {
     getUserInfo();
   }, [telegramUserId]);
@@ -149,9 +168,14 @@ const App = () => {
               <TapPage
                 socket={socket}
                 userId={telegramUserId}
-                user_balance = {user_balance.current}
-                user={userInfo.current}
-                user_trophy={user_trophy}
+                userBalance={userBalance}
+                setUserBalance={setUserBalance}
+                user_trophy={userTrophy}
+                userMultiTap={userMultiTap}
+                maxEnergyLimit={maxEnergyLimit}
+                energyFillSpeed={enrgyFillSpeed}
+                currentEnergy={currentEnergy}
+                setCurrentEnergy={setCurrentEnergy}
               />
             }
           />
