@@ -17,9 +17,8 @@ import MainButtonDemo from "./MainButtonDemo";
 import ShowPopupDemo from "./ShowPopupDemo";
 import HapticFeedbackDemo from "./HapticFeedbackDemo";
 import ScanQrPopupDemo from "./ScanQrPopupDemo";
-import ExpandDemo from "./ExpandDemo";
 import useBetaVersion from "./useBetaVersion";
-import { useInitData } from "@vkruglikov/react-telegram-web-app";
+// import { useInitData } from "@vkruglikov/react-telegram-web-app";
 import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 import TapPage from "./pages/TapPage";
 import { io } from "socket.io-client";
@@ -109,32 +108,33 @@ const App = () => {
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
   const [rootLoading, setRootLoading] = useState(false);
   const userInfo = useRef(null);
-  const [initDataUnsafe] = useInitData();
-  const telegramUserId = initDataUnsafe?.user?.id;
+  // const [initDataUnsafe] = useInitData();
+  // const telegramUserId = initDataUnsafe?.user?.id;
+  const telegramUserId = 123456;
 
-  const getUserInfo = async () => {
-    const path_url = process.env.REACT_APP_URL + "api/auth/login-register/";
-    console.log(path_url);
-    try {
-      const response = await fetch(path_url, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "info-user": telegramUserId,
-        },
-      });
-      const user = await response.json();
-      userInfo.current = user;
-      // setUser(userInfo);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const getUserInfo = async () => {
+  //   const path_url = process.env.REACT_APP_URL + "api/auth/login-register/";
+  //   console.log(path_url);
+  //   try {
+  //     const response = await fetch(path_url, {
+  //       method: "GET",
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json",
+  //         "info-user": telegramUserId,
+  //       },
+  //     });
+  //     const user = await response.json();
+  //     userInfo.current = user;
+  //     // setUser(userInfo);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  useEffect(() => {
-    getUserInfo();
-  }, [telegramUserId]);
+  // useEffect(() => {
+  //   getUserInfo();
+  // }, [telegramUserId]);
 
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>

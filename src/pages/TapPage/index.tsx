@@ -15,6 +15,7 @@ interface TapPageProps {
 }
 
 const TapPage = ({ socket, userId, user }: TapPageProps) => {
+  console.log(userId);
   return (
     <RootLayout bg_img={bgImg}>
       <p className="text-red-500">salammmm : {userId}</p>
