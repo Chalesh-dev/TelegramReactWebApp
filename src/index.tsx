@@ -14,7 +14,10 @@ import ScanQrPopupDemo from "./ScanQrPopupDemo";
 import ExpandDemo from "./ExpandDemo";
 import useBetaVersion from "./useBetaVersion";
 import { useInitData } from "@vkruglikov/react-telegram-web-app";
-import { TelegramProvider } from "./context/TelegramContext";
+import { Navigate, Route, Routes } from "react-router-dom";
+import TapPage from "./pages/TapPage";
+import { io } from "socket.io-client";
+// import socketIO from "socket.io-client";
 
 // const DemoApp: FC<{
 //   onChangeTransition: DispatchWithoutAction;
@@ -91,24 +94,25 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
+/**socket */
+// const socket = socketIO.connect("https://socket.spxswap.com");
+// const socket = io("https://socket.spxswap.com");
+
 const App = () => {
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
 
   const [initDataUnsafe] = useInitData();
+  const telegramUserId = initDataUnsafe?.user?.id;
 
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
-      {/* <TelegramProvider> */}
-        <p>thi is  demo ....</p>
-        <p style={{ color: "red" }}>{initDataUnsafe?.user?.id}</p>
-        {/* <ExpandDemo /> */}
-        {/* <p style={{ color: "red" }}>
-          this is user_id: {initDataUnsafe?.user?.id}
-        </p> */}
-        {/* <DemoApp
-        onChangeTransition={() => setSmoothButtonsTransition(state => !state)}
-      /> */}
-      {/* </TelegramProvider> */}
+      <Routes>
+        <Route path="/" element={<Navigate to="/tap" replace />} />
+        <Route
+          path="/tap"
+          element={<TapPage socket={socket} userId={telegramUserId} />}
+        />
+      </Routes>
     </WebAppProvider>
   );
 };
