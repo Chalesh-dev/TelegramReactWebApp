@@ -6,17 +6,13 @@ import {
 } from '@vkruglikov/react-telegram-web-app';
 import { ConfigProvider, theme } from 'antd';
 import 'antd/dist/reset.css';
-
 import './index.css';
-import logo from './logo.svg';
-
 import MainButtonDemo from './MainButtonDemo';
 import ShowPopupDemo from './ShowPopupDemo';
 import HapticFeedbackDemo from './HapticFeedbackDemo';
 import ScanQrPopupDemo from './ScanQrPopupDemo';
 import ExpandDemo from './ExpandDemo';
 import useBetaVersion from './useBetaVersion';
-
 import { useInitData } from "@vkruglikov/react-telegram-web-app";
 
 // const DemoApp: FC<{
@@ -94,6 +90,8 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 
+
+
 const App = () => {
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
 
@@ -101,6 +99,7 @@ const App = () => {
 
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
+
       {/* <ExpandDemo /> */}
       <p style={{ color: "red" }}>this is user_id: {initDataUnsafe?.user?.id}</p>
       {/* <DemoApp
