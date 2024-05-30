@@ -18,7 +18,7 @@ import ShowPopupDemo from "./ShowPopupDemo";
 import HapticFeedbackDemo from "./HapticFeedbackDemo";
 import ScanQrPopupDemo from "./ScanQrPopupDemo";
 import useBetaVersion from "./useBetaVersion";
-import { useInitData } from "@vkruglikov/react-telegram-web-app";
+// import { useInitData } from "@vkruglikov/react-telegram-web-app";
 // import { useInitData } from "@tma.js/sdk-react";
 import {
   BrowserRouter,
@@ -114,9 +114,9 @@ const socket = io("https://socket.spxswap.com");
 
 const App = () => {
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
-  const [initDataUnsafe] = useInitData();
-  const telegramUserId = initDataUnsafe?.user?.id;
-  // const telegramUserId = 123456;
+  // const [initDataUnsafe] = useInitData();
+  // const telegramUserId = initDataUnsafe?.user?.id;
+  const telegramUserId = 123456;
 
   const [rootLoading, setRootLoading] = useState(false);
   const [userBalance, setUserBalance] = useState<number>(0);
@@ -152,16 +152,16 @@ const App = () => {
       setEnergyFillSpeed(Number(user?.UserEnergySpeed));
       setCurrentEnergy(Number(user?.UserCurrentEnergy));
 
-      // socket.emit(
-      //   "id",
-      //   {
-      //     id: telegramUserId,
-      //     limit: Number(user?.user_energy_limit),
-      //     speed: Number(user?.UserEnergySpeed),
-      //     energy: Number(user?.UserCurrentEnergy),
-      //   },
-      //   (data: any) => {}
-      // );
+      socket.emit(
+        "id",
+        {
+          id: telegramUserId,
+          limit: Number(user?.user_energy_limit),
+          speed: Number(user?.UserEnergySpeed),
+          energy: Number(user?.UserCurrentEnergy),
+        },
+        (data: any) => {}
+      );
 
       // console.log("rtt", user?.user?.energy_many[0]);
 
@@ -179,11 +179,11 @@ const App = () => {
     getUserInfo();
   }, [telegramUserId]);
 
-  // useEffect(() => {
-  //   if (pathname !== "tap") {
-  //     socket.emit("submit", "");
-  //   }
-  // }, [pathname]);
+  useEffect(() => {
+    if (pathname !== "tap") {
+      socket.emit("submit", "");
+    }
+  }, [pathname]);
 
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
