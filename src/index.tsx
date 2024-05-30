@@ -14,7 +14,7 @@ import ScanQrPopupDemo from "./ScanQrPopupDemo";
 import ExpandDemo from "./ExpandDemo";
 import useBetaVersion from "./useBetaVersion";
 import { useInitData } from "@vkruglikov/react-telegram-web-app";
-import { Link, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 import TapPage from "./pages/TapPage";
 import { io } from "socket.io-client";
 // import socketIO from "socket.io-client";
@@ -98,7 +98,7 @@ const root = ReactDOM.createRoot(
 // const socket = socketIO.connect("https://socket.spxswap.com");
 // const socket = io("https://socket.spxswap.com");
 // {
-  /* <Route
+/* <Route
           path="/tap"
           element={<TapPage socket={socket} userId={telegramUserId} />}
         /> */
@@ -112,16 +112,16 @@ const App = () => {
 
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
-      {/* <Routes>
-        <Route path="/" element={<Navigate to="/tap" replace />} />
-        <Route
-          path="/tap"
-          element={<TapPage userId={telegramUserId} />}
-        />
-      </Routes>
-      <Link to={'/tap'} style={{color:'red'}}>Home</Link> */}
-      <p style={{color:'#fff'}}>userId={telegramUserId}</p>
-
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Navigate to="/tap" replace />} />
+          <Route path="/tap" element={<TapPage userId={telegramUserId} />} />
+        </Routes>
+        <Link to={"/tap"} style={{ color: "red" }}>
+          Home
+        </Link>
+        <p style={{ color: "#fff" }}>userId={telegramUserId}</p>
+      </BrowserRouter>
     </WebAppProvider>
   );
 };
