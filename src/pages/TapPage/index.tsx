@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import bgImg from "../../assets/bg_images/bg-2.png";
 import RootLayout from "../../components/RootLayout/RootLayout";
 import Loading from "../../components/LoadingComp/Loading";
+import Balance from "../../components/Balance/Balance";
 
 /**PATH */
 const energy_unit_path = process.env.REACT_APP_URL + "api/landing/info-energy";
@@ -13,7 +14,7 @@ const last_energy_path = process.env.REACT_APP_URL + "api/data/get-data";
 interface TapPageProps {
   socket: any;
   userId: any;
-  user?: [] | undefined | null;
+  user?: any
 }
 
 const TapPage = ({ socket, userId, user }: TapPageProps) => {
@@ -107,7 +108,32 @@ const TapPage = ({ socket, userId, user }: TapPageProps) => {
         <Loading />
       ) : (
         <RootLayout bg_img={bgImg}>
-          <p className="text-red-500">salammmm : {userId}</p>
+          <div className="flex flex-col items-center justify-around w-full h-full">
+            <p className="text-red-500">{userId}</p>
+            <p className="text-white">amount:{user?.user?.t_balance[0]?.amount}</p>
+            <p>status:{user?.status}</p>
+            
+            {/* <Balance balance={balance} cup={true} /> */}
+
+            {/* <CoinIcon
+              balance={balance}
+              increment={user?.level?.unit}
+              // increment={scoreRef.current}
+              onCoinClick={handleCoinClick}
+              currentSpark={currentSpark}
+            /> */}
+
+            {/* {loadingRecharging ? (
+          <ProgressBarLoading />
+        ) : ( */}
+            {/* <ScoreBar
+              maxLimitSpark={energyUnit?.size}
+              incrementSparkNumber={Number(increaseSpeed?.unit)}
+              currentSpark={currentSpark}
+              // setCurrentSpark={setCurrentSpark}
+            /> */}
+            {/* )} */}
+          </div>
         </RootLayout>
       )}
     </>
