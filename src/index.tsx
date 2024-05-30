@@ -97,12 +97,7 @@ const root = ReactDOM.createRoot(
 /**socket */
 // const socket = socketIO.connect("https://socket.spxswap.com");
 // const socket = io("https://socket.spxswap.com");
-// {
-/* <Route
-          path="/tap"
-          element={<TapPage socket={socket} userId={telegramUserId} />}
-        /> */
-// }
+const socket = "frrfr";
 
 const App = () => {
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
@@ -115,12 +110,11 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/tap" replace />} />
-          <Route path="/tap" element={<TapPage userId={telegramUserId} />} />
+          <Route
+            path="/tap"
+            element={<TapPage socket={socket} userId={telegramUserId} />}
+          />
         </Routes>
-        <Link to={"/tap"} style={{ color: "red" }}>
-          Home
-        </Link>
-        <p style={{ color: "#fff" }}>userId={telegramUserId}</p>
       </BrowserRouter>
     </WebAppProvider>
   );

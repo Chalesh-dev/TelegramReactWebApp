@@ -1,0 +1,68 @@
+.layout {
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+  color: white;
+  position: relative;
+  /* background-image: url("../../../public/images/bg-3.png"); */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.layout::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+  background-color: rgba(0, 0, 0, 0.5); /* Optional: Adds a dark overlay */
+  pointer-events: none; /* Ensures the overlay doesn't interfere with clicking elements inside the layout */
+}
+
+.radial {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* background-image: radial-gradient(
+          ellipse at 0% 40%,
+          rgb(224, 224, 65) 0%,
+          transparent 40%
+        ),
+        radial-gradient(circle at 0% 100%, transparent 0%, transparent 8%); */
+}
+
+.layout_container {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 5rem;
+  grid-template-areas:
+    "main"
+    "footer";
+  height: 100%;
+  padding: 0.5rem 0.5rem 1.5rem 0.5rem;
+  position: relative;
+  z-index: 50;
+}
+
+main {
+  grid-area: main;
+  padding: 1rem 1rem 0 1rem;
+  /* overflow-y: auto; */
+}
+
+footer {
+  grid-area: footer;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  padding-top: 0.5rem;
+  z-index: 500;
+}
