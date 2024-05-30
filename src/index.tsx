@@ -179,11 +179,11 @@ const App = () => {
     getUserInfo();
   }, [telegramUserId]);
 
-  useEffect(() => {
-    if (pathname !== "tap") {
-      socket.emit("submit", "");
-    }
-  }, [pathname]);
+  // useEffect(() => {
+  //   if (pathname !== "tap") {
+  //     socket.emit("submit", "");
+  //   }
+  // }, [pathname]);
 
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
