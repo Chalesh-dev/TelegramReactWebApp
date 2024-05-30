@@ -45,57 +45,57 @@ const TapPage: React.FC<TapPageProps> = ({
     maxEnergyLimit
   );
 
-  useEffect(() => {
-    socket.on("top", (data: any) => {
-      if (setUserBalance) {
-        setUserBalance((prevState) => (prevState ?? 0) + Number(data));
-      }
-      // scoreRef.current = data;
-      // setCurrentSpark((prevSpark) => Math.max(prevSpark - data, 0));
-    });
+  // useEffect(() => {
+  //   socket.on("top", (data: any) => {
+  //     if (setUserBalance) {
+  //       setUserBalance((prevState) => (prevState ?? 0) + Number(data));
+  //     }
+  //     // scoreRef.current = data;
+  //     // setCurrentSpark((prevSpark) => Math.max(prevSpark - data, 0));
+  //   });
 
-    socket.on("energy", (data: any) => {
-      if (setCurrentEnergy) {
-        setCurrentEnergy(Number(data));
-      }
-    });
+  //   socket.on("energy", (data: any) => {
+  //     if (setCurrentEnergy) {
+  //       setCurrentEnergy(Number(data));
+  //     }
+  //   });
 
-    socket.emit(
-      "id",
-      {
-        id: userId,
-        limit: maxEnergyLimit,
-        speed: energyFillSpeed,
-        energy: currentEnergy,
-      },
-      (data: any) => {}
-    );
-  }, [socket]);
+  //   socket.emit(
+  //     "id",
+  //     {
+  //       id: userId,
+  //       limit: maxEnergyLimit,
+  //       speed: energyFillSpeed,
+  //       energy: currentEnergy,
+  //     },
+  //     (data: any) => {}
+  //   );
+  // }, [socket]);
 
-  useEffect(() => {
-    socket.emit(
-      "id",
-      {
-        id: userId,
-        limit: maxEnergyLimit,
-        speed: energyFillSpeed,
-        energy: currentEnergy,
-      },
-      (data: any) => {}
-    );
-  }, [maxEnergyLimit, energyFillSpeed]);
+  // useEffect(() => {
+  //   socket.emit(
+  //     "id",
+  //     {
+  //       id: userId,
+  //       limit: maxEnergyLimit,
+  //       speed: energyFillSpeed,
+  //       energy: currentEnergy,
+  //     },
+  //     (data: any) => {}
+  //   );
+  // }, [maxEnergyLimit, energyFillSpeed]);
 
   const handleCoinClick = () => {
-    socket.emit(
-      "tap",
-      {
-        id: userId,
-        level: userMultiTap,
-      },
-      function (data: any) {
-        console.log("data:", data);
-      }
-    );
+    // socket.emit(
+    //   "tap",
+    //   {
+    //     id: userId,
+    //     level: userMultiTap,
+    //   },
+    //   function (data: any) {
+    //     console.log("data:", data);
+    //   }
+    // );
     //   //   // setBalance((prevBalance) => prevBalance + Number(user?.level?.unit));
   };
 
