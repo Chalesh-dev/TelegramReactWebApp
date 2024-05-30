@@ -112,14 +112,14 @@ const App = () => {
 
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
-      <Routes>
+      {/* <Routes>
         <Route path="/" element={<Navigate to="/tap" replace />} />
         <Route
           path="/tap"
           element={<TapPage userId={telegramUserId} />}
         />
       </Routes>
-      <Link to={'/tap'} style={{color:'red'}}>Home</Link>
+      <Link to={'/tap'} style={{color:'red'}}>Home</Link> */}
       <p style={{color:'#fff'}}>userId={telegramUserId}</p>
 
     </WebAppProvider>
