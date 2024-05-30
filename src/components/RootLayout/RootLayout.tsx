@@ -1,7 +1,7 @@
 import React from "react";
 import { links } from "../config/Links";
 import LinkContainer from "../LinkContainer";
-import "./index.css";
+import "./RootLayout.css";
 
 const RootLayout = ({
   children,
