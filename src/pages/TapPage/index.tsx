@@ -99,7 +99,7 @@ const TapPage: React.FC<TapPageProps> = ({
     socket.emit(
       "tap",
       {
-        id: userId,
+        // id: userId,
         level: userMultiTap,
       },
       function (data: any) {
