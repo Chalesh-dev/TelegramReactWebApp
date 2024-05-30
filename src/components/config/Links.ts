@@ -25,7 +25,7 @@ export const links = [
   {
     src: "./images/stats.png",
     name: "stats",
-    link: "/tap",
-    // link: "/stats",
+    // link: "/tap",
+    link: "/stats",
   },
 ];

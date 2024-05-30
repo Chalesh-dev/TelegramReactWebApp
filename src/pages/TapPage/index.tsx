@@ -37,11 +37,11 @@ const TapPage: React.FC<TapPageProps> = ({
   const location = useLocation();
   const pathname = location.pathname.split("/")[1];
 
-  useEffect(() => {
-    if (pathname !== "tap") {
-      socket.emit("submit", "");
-    }
-  }, [pathname]);
+  // useEffect(() => {
+  //   if (pathname !== "tap") {
+  //     socket.emit("submit", "");
+  //   }
+  // }, [pathname]);
 
   console.log(
     userId,

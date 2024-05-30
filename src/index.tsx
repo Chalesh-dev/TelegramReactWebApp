@@ -20,15 +20,10 @@ import ScanQrPopupDemo from "./ScanQrPopupDemo";
 import useBetaVersion from "./useBetaVersion";
 import { useInitData } from "@vkruglikov/react-telegram-web-app";
 // import { useInitData } from "@tma.js/sdk-react";
-import {
-  BrowserRouter,
-  Link,
-  Navigate,
-  Route,
-  Routes,
-} from "react-router-dom";
+import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 import TapPage from "./pages/TapPage";
 import { io } from "socket.io-client";
+import { SocketProvider } from "./context/SocketContext";
 // import socketIO from "socket.io-client";
 
 // const DemoApp: FC<{
@@ -178,26 +173,28 @@ const App = () => {
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/tap" replace />} />
-          <Route
-            path="/tap"
-            element={
-              <TapPage
-                socket={socket}
-                userId={telegramUserId}
-                userBalance={userBalance}
-                setUserBalance={setUserBalance}
-                user_trophy={userTrophy}
-                userMultiTap={userMultiTap}
-                maxEnergyLimit={maxEnergyLimit}
-                energyFillSpeed={energyFillSpeed}
-                currentEnergy={currentEnergy}
-                setCurrentEnergy={setCurrentEnergy}
-              />
-            }
-          />
-        </Routes>
+        <SocketProvider socket={socket}>
+          <Routes>
+            <Route path="/" element={<Navigate to="/tap" replace />} />
+            <Route
+              path="/tap"
+              element={
+                <TapPage
+                  socket={socket}
+                  userId={telegramUserId}
+                  userBalance={userBalance}
+                  setUserBalance={setUserBalance}
+                  user_trophy={userTrophy}
+                  userMultiTap={userMultiTap}
+                  maxEnergyLimit={maxEnergyLimit}
+                  energyFillSpeed={energyFillSpeed}
+                  currentEnergy={currentEnergy}
+                  setCurrentEnergy={setCurrentEnergy}
+                />
+              }
+            />
+          </Routes>
+        </SocketProvider>
       </BrowserRouter>
     </WebAppProvider>
   );
