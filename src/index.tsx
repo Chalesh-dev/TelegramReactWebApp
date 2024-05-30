@@ -152,16 +152,16 @@ const App = () => {
       setEnergyFillSpeed(Number(user?.UserEnergySpeed));
       setCurrentEnergy(Number(user?.UserCurrentEnergy));
 
-      socket.emit(
-        "id",
-        {
-          id: telegramUserId,
-          limit: Number(user?.user_energy_limit),
-          speed: Number(user?.UserEnergySpeed),
-          energy: Number(user?.UserCurrentEnergy),
-        },
-        (data: any) => {}
-      );
+      // socket.emit(
+      //   "id",
+      //   {
+      //     id: telegramUserId,
+      //     limit: Number(user?.user_energy_limit),
+      //     speed: Number(user?.UserEnergySpeed),
+      //     energy: Number(user?.UserCurrentEnergy),
+      //   },
+      //   (data: any) => {}
+      // );
 
       // console.log("rtt", user?.user?.energy_many[0]);
 
