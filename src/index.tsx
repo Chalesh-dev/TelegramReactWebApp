@@ -11,7 +11,6 @@ import './index.css';
 import logo from './logo.svg';
 
 import MainButtonDemo from './MainButtonDemo';
-import BackButtonDemo from './BackButtonDemo';
 import ShowPopupDemo from './ShowPopupDemo';
 import HapticFeedbackDemo from './HapticFeedbackDemo';
 import ScanQrPopupDemo from './ScanQrPopupDemo';
@@ -80,7 +79,6 @@ const DemoApp: FC<{
               }}
             />
           )}
-          <BackButtonDemo />
           <ShowPopupDemo />
           <HapticFeedbackDemo />
           <ScanQrPopupDemo />
