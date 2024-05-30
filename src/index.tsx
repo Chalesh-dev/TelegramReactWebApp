@@ -112,28 +112,28 @@ const App = () => {
   const telegramUserId = initDataUnsafe?.user?.id;
   // const telegramUserId = 123456;
 
-  // const getUserInfo = async () => {
-  //   const path_url = process.env.REACT_APP_URL + "api/auth/login-register/";
-  //   console.log(path_url);
-  //   try {
-  //     const response = await fetch(path_url + telegramUserId, {
-  //       method: "GET",
-  //       headers: {
-  //         Accept: "application/json",
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-  //     const user = await response.json();
-  //     userInfo.current = user;
-  //     // setUser(userInfo);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const getUserInfo = async () => {
+    const path_url = process.env.REACT_APP_URL + "api/auth/login-register/";
+    console.log(path_url);
+    try {
+      const response = await fetch(path_url + telegramUserId, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      const user = await response.json();
+      userInfo.current = user;
+      // setUser(userInfo);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  // useEffect(() => {
-  //   getUserInfo();
-  // }, [telegramUserId]);
+  useEffect(() => {
+    getUserInfo();
+  }, [telegramUserId]);
 
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>

@@ -95,11 +95,11 @@ const TapPage = ({ socket, userId, user }: TapPageProps) => {
     }
   };
 
-  // useEffect(() => {
-  //   getEnergyUnit();
-  //   getRechargingSpeed();
-  //   getLastEnergy();
-  // }, []);
+  useEffect(() => {
+    getEnergyUnit();
+    getRechargingSpeed();
+    getLastEnergy();
+  }, []);
 
   return (
     <>
