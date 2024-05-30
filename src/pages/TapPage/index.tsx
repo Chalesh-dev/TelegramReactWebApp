@@ -14,9 +14,11 @@ interface TapPageProps {
 }
 
 const TapPage = ({ socket, userId }: TapPageProps) => {
-  return <RootLayout bg_img={bgImg}>
-    <p className="text-red-500">salammmm : {userId}</p>
-  </RootLayout>;
+  return (
+    <RootLayout bg_img={bgImg}>
+      <p className="text-red-500">salammmm : {userId}</p>
+    </RootLayout>
+  );
 };
 
 export default TapPage;
