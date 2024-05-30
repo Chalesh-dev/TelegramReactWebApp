@@ -47,7 +47,6 @@ const TapPage: React.FC<TapPageProps> = ({
 
   useEffect(() => {
     socket.on("top", (data: any) => {
-      console.log("ddddd", data);
       if (setUserBalance) {
         setUserBalance((prevState) => (prevState ?? 0) + Number(data));
       }
@@ -67,7 +66,7 @@ const TapPage: React.FC<TapPageProps> = ({
         id: userId,
         limit: maxEnergyLimit,
         speed: energyFillSpeed,
-        energy: currentEnergy
+        energy: currentEnergy,
       },
       (data: any) => {}
     );
@@ -80,24 +79,24 @@ const TapPage: React.FC<TapPageProps> = ({
         id: userId,
         limit: maxEnergyLimit,
         speed: energyFillSpeed,
-        energy: currentEnergy
+        energy: currentEnergy,
       },
       (data: any) => {}
     );
   }, [maxEnergyLimit, energyFillSpeed]);
 
   const handleCoinClick = () => {
-      socket.emit(
-        "tap",
-        {
-          id: userId,
-          level: userMultiTap
-        },
-        function (data: any) {
-          console.log("data:", data);
-        }
-      );
-  //   //   // setBalance((prevBalance) => prevBalance + Number(user?.level?.unit));
+    socket.emit(
+      "tap",
+      {
+        id: userId,
+        level: userMultiTap,
+      },
+      function (data: any) {
+        console.log("data:", data);
+      }
+    );
+    //   //   // setBalance((prevBalance) => prevBalance + Number(user?.level?.unit));
   };
 
   return (
@@ -105,41 +104,41 @@ const TapPage: React.FC<TapPageProps> = ({
       {/* {loading ? (
         <Loading />
       ) : ( */}
-        <RootLayout bg_img={bgImg}>
-          <div className="flex flex-col items-center justify-around w-full h-full">
+      <RootLayout bg_img={bgImg}>
+        <div className="flex flex-col items-center justify-around w-full h-full">
           <p className="text-red-500">{userId}</p>
-            {/* <p className="text-red-500">{userId}</p>
+          {/* <p className="text-red-500">{userId}</p>
             <p className="text-white">amount:{user?.user?.t_balance[0]?.amount}</p>
             <p>status:{user?.status}</p> */}
 
-            <Balance balance={userBalance} user_trophy={user_trophy} cup={true} />
+          <Balance balance={userBalance} user_trophy={user_trophy} cup={true} />
 
-            <CoinIcon
-              balance={userBalance}
-              increment={userMultiTap}
-              onCoinClick={handleCoinClick}
-              currentSpark={currentEnergy}
-            />
+          <CoinIcon
+            balance={userBalance}
+            increment={userMultiTap}
+            onCoinClick={handleCoinClick}
+            currentSpark={currentEnergy}
+          />
 
-            <ScoreBar
-              maxLimitSpark={maxEnergyLimit}
-              incrementSparkNumber={userMultiTap}
-              currentSpark={currentEnergy}
-              // setCurrentSpark={setCurrentSpark}
-            />
+          <ScoreBar
+            maxLimitSpark={maxEnergyLimit}
+            incrementSparkNumber={userMultiTap}
+            currentSpark={currentEnergy}
+            // setCurrentSpark={setCurrentSpark}
+          />
 
-            {/* {loadingRecharging ? (
+          {/* {loadingRecharging ? (
           <ProgressBarLoading />
         ) : ( */}
-            {/* <ScoreBar
+          {/* <ScoreBar
               maxLimitSpark={energyUnit?.size}
               incrementSparkNumber={Number(increaseSpeed?.unit)}
               currentSpark={currentSpark}
               // setCurrentSpark={setCurrentSpark}
             /> */}
-            {/* )} */}
-          </div>
-        </RootLayout>
+          {/* )} */}
+        </div>
+      </RootLayout>
       {/* )} */}
     </>
   );

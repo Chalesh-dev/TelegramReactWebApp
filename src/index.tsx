@@ -20,7 +20,14 @@ import ScanQrPopupDemo from "./ScanQrPopupDemo";
 import useBetaVersion from "./useBetaVersion";
 import { useInitData } from "@vkruglikov/react-telegram-web-app";
 // import { useInitData } from "@tma.js/sdk-react";
-import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Link,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import TapPage from "./pages/TapPage";
 import { io } from "socket.io-client";
 // import socketIO from "socket.io-client";
@@ -119,6 +126,9 @@ const App = () => {
   const [energyFillSpeed, setEnergyFillSpeed] = useState<number>(0);
   const [currentEnergy, setCurrentEnergy] = useState<number>(0);
 
+  const location = useLocation();
+  const pathname = location.pathname.split("/")[1];
+
   const getUserInfo = async () => {
     const path_url = process.env.REACT_APP_URL + "api/auth/login-register/";
     try {
@@ -142,6 +152,17 @@ const App = () => {
       setEnergyFillSpeed(Number(user?.UserEnergySpeed));
       setCurrentEnergy(Number(user?.UserCurrentEnergy));
 
+      socket.emit(
+        "id",
+        {
+          id: telegramUserId,
+          limit: Number(user?.user_energy_limit),
+          speed: Number(user?.UserEnergySpeed),
+          energy: Number(user?.UserCurrentEnergy),
+        },
+        (data: any) => {}
+      );
+
       // console.log("rtt", user?.user?.energy_many[0]);
 
       // user_trophy.current = user?.user?.trophy_many[0];
@@ -157,6 +178,12 @@ const App = () => {
   useEffect(() => {
     getUserInfo();
   }, [telegramUserId]);
+
+  useEffect(() => {
+    if (pathname !== "tap") {
+      socket.emit("submit", "");
+    }
+  }, [pathname]);
 
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
