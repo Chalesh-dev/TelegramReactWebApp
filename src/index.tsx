@@ -18,8 +18,8 @@ import ShowPopupDemo from "./ShowPopupDemo";
 import HapticFeedbackDemo from "./HapticFeedbackDemo";
 import ScanQrPopupDemo from "./ScanQrPopupDemo";
 import useBetaVersion from "./useBetaVersion";
-// import { useInitData } from "@vkruglikov/react-telegram-web-app";
-import { useInitData } from "@tma.js/sdk-react";
+import { useInitData } from "@vkruglikov/react-telegram-web-app";
+// import { useInitData } from "@tma.js/sdk-react";
 import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 import TapPage from "./pages/TapPage";
 import { io } from "socket.io-client";
@@ -102,14 +102,14 @@ const root = ReactDOM.createRoot(
 
 /**socket */
 // const socket = socketIO.connect("https://socket.spxswap.com");
-// const socket = io("https://socket.spxswap.com");
-const socket = "frrfr";
+const socket = io("https://socket.spxswap.com");
+// const socket = "frrfr";
 
 const App = () => {
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
-  // const [initDataUnsafe] = useInitData();
-  // const telegramUserId = initDataUnsafe?.user?.id;
-  const telegramUserId = 123456;
+  const [initDataUnsafe] = useInitData();
+  const telegramUserId = initDataUnsafe?.user?.id;
+  // const telegramUserId = 123456;
 
   const [rootLoading, setRootLoading] = useState(false);
   const [userBalance, setUserBalance] = useState<number>(0);
