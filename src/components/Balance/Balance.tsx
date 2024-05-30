@@ -3,14 +3,15 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Trophy } from "../Icons";
 
 interface BalanceType {
-  border: string;
-  cup: boolean;
-  description: string;
-  referral: boolean;
-  referral_score: number;
-  referral_status: boolean;
-  stats: boolean;
-  balance: number;
+  border?: string;
+  cup?: boolean;
+  description?: string;
+  referral?: boolean;
+  referral_score?: number;
+  referral_status?: boolean;
+  stats?: boolean;
+  balance?: number;
+  user_trophy?: string
 }
 
 const Balance = ({
@@ -22,6 +23,7 @@ const Balance = ({
   referral_status = false,
   stats,
   balance,
+  user_trophy
 }: BalanceType) => {
   return (
     <div
@@ -47,21 +49,30 @@ const Balance = ({
                 {balance} {stats && user?.balance > 0 && " T"}
               </span>
             )} */}
+            <span className="text-3xl text-white font-bold">
+              {balance} {stats && " T"}
+            </span>
           </div>
           {cup && (
+            <Link
+              className="flex justify-center items-center gap-2"
+              to={"/trophy"}
+            >
+              <Trophy />
+              {user_trophy}
+              <ArrowRight size={24} />
+            </Link>
+          )}
+          {/* {cup && (
             <Link
               to={"/trophy"}
               className="flex justify-center items-center gap-2"
             >
-              {/* <Trophy /> */}
-              {/* {user?.loadingTrophy ? (
-                <div className="flex justify-center items-center">....</div>
-              ) : (
-                user?.user_trophy
-              )} */}
-              {/* <ArrowRight size={24} /> */}
+              <Trophy />
+              {user?.user_trophy}
+              <ArrowRight size={24}
             </Link>
-          )}
+          )} */}
         </>
       )}
     </div>

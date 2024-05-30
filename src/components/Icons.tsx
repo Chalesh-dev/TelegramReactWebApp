@@ -24,39 +24,39 @@ export const TaskIcon = () => {
   );
 };
 
-export const BatteryIcon = ({ color, size }) => {
+export const BatteryIcon = ({ color, size }: any) => {
   return <MdBatteryCharging30 color={color} size={size} />;
 };
 
-export const FlameIcon = ({ color, size }) => {
+export const FlameIcon = ({ color, size }: any) => {
   return <VscFlame color={color} size={size} />;
 };
 
-export const FlashIcon = ({ color, size }) => {
+export const FlashIcon = ({ color, size }: any) => {
   return <IoFlashSharp color={color} size={size} />;
 };
 
-export const EnergyLimit = ({ color, size }) => {
+export const EnergyLimit = ({ color, size }: any) => {
   return <IoMdBatteryCharging color={color} size={size} />;
 };
 
-export const Hand = ({ color, size }) => {
+export const Hand = ({ color, size }: any) => {
   return <FaHandPeace color={color} size={size} />;
 };
 
-export const Robot = ({ color, size }) => {
+export const Robot = ({ color, size }: any) => {
   return <FaRobot color={color} size={size} />;
 };
 
-export const Close = ({ color, size, onClick }) => {
+export const Close = ({ color, size, onClick }: any) => {
   return <IoMdClose onClick={onClick} color={color} size={size} />;
 };
 
-export const Trophy = ({ color, size, onClick }) => {
+export const Trophy = ({ color, size, onClick }: any) => {
   return <GiLaurelsTrophy onClick={onClick} color={color} size={size} />;
 };
 
-export const ArrowRight = ({ color, size, onClick }) => {
+export const ArrowRight = ({ color, size, onClick }: any) => {
   return (
     <MdOutlineKeyboardArrowRight onClick={onClick} color={color} size={size} />
   );

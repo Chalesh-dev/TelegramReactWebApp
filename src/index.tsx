@@ -101,20 +101,21 @@ const root = ReactDOM.createRoot(
 
 /**socket */
 // const socket = socketIO.connect("https://socket.spxswap.com");
-// const socket = io("https://socket.spxswap.com");
-const socket = "frrfr";
+const socket = io("https://socket.spxswap.com");
+// const socket = "frrfr";
 
 const App = () => {
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
   const [rootLoading, setRootLoading] = useState(false);
   const userInfo = useRef(null);
+  const user_balance = useRef(0);
+  const user_trophy = useRef([]);
   const [initDataUnsafe] = useInitData();
   const telegramUserId = initDataUnsafe?.user?.id;
   // const telegramUserId = 123456;
 
   const getUserInfo = async () => {
     const path_url = process.env.REACT_APP_URL + "api/auth/login-register/";
-    console.log(path_url);
     try {
       const response = await fetch(path_url + telegramUserId, {
         method: "GET",
@@ -125,12 +126,14 @@ const App = () => {
       });
       const user = await response.json();
       userInfo.current = user;
-      // setUser(userInfo);
+      console.log('errr',user);
+      user_balance.current = user?.user?.t_balance[0]?.amount;
+      user_trophy.current = user?.user?.trophy_many[0];
     } catch (error) {
       console.log(error);
     }
   };
-
+  
   useEffect(() => {
     getUserInfo();
   }, [telegramUserId]);
@@ -146,7 +149,9 @@ const App = () => {
               <TapPage
                 socket={socket}
                 userId={telegramUserId}
+                user_balance = {user_balance.current}
                 user={userInfo.current}
+                user_trophy={user_trophy}
               />
             }
           />
