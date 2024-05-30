@@ -17,6 +17,8 @@ import ScanQrPopupDemo from './ScanQrPopupDemo';
 import ExpandDemo from './ExpandDemo';
 import useBetaVersion from './useBetaVersion';
 
+import { useInitData } from "@vkruglikov/react-telegram-web-app";
+
 // const DemoApp: FC<{
 //   onChangeTransition: DispatchWithoutAction;
 // }> = ({ onChangeTransition }) => {
@@ -95,9 +97,12 @@ const root = ReactDOM.createRoot(
 const App = () => {
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
 
+  const [initDataUnsafe] = useInitData();
+
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
-      <ExpandDemo />
+      {/* <ExpandDemo /> */}
+      <p style={{ color: "red" }}>{initDataUnsafe?.user?.id}</p>
       {/* <DemoApp
         onChangeTransition={() => setSmoothButtonsTransition(state => !state)}
       /> */}
