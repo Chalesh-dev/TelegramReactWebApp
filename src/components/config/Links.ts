@@ -2,12 +2,14 @@ export const links = [
   {
     src: "./images/change.png",
     name: "ref",
-    link: "/ref",
+    link: "/tap",
+    // link: "/ref",
   },
   {
     src: "./images/check-list.png",
     name: "task",
-    link: "/task",
+    link: "/tap",
+    // link: "/task",
   },
   {
     src: "./images/coin-icon.png",
@@ -17,11 +19,13 @@ export const links = [
   {
     src: "./images/fire.png",
     name: "boost",
-    link: "/boost",
+    link: "/tap",
+    // link: "/boost",
   },
   {
     src: "./images/stats.png",
     name: "stats",
-    link: "/stats",
+    link: "/tap",
+    // link: "/stats",
   },
 ];
