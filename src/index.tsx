@@ -14,7 +14,7 @@ import ScanQrPopupDemo from "./ScanQrPopupDemo";
 import ExpandDemo from "./ExpandDemo";
 import useBetaVersion from "./useBetaVersion";
 import { useInitData } from "@vkruglikov/react-telegram-web-app";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Link, Navigate, Route, Routes } from "react-router-dom";
 import TapPage from "./pages/TapPage";
 import { io } from "socket.io-client";
 // import socketIO from "socket.io-client";
@@ -119,6 +119,8 @@ const App = () => {
           element={<TapPage userId={telegramUserId} />}
         />
       </Routes>
+      <Link to={'/tap'} style={{color:'red'}}>Home</Link>
+
     </WebAppProvider>
   );
 };
