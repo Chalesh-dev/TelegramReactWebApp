@@ -120,6 +120,7 @@ const App = () => {
         />
       </Routes>
       <Link to={'/tap'} style={{color:'red'}}>Home</Link>
+      <p style={{color:'#fff'}}>userId={telegramUserId}</p>
 
     </WebAppProvider>
   );
