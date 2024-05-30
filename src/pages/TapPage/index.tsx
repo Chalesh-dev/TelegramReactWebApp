@@ -10,7 +10,7 @@ const last_energy_path = process.env.REACT_APP_URL + "api/data/get-data";
 
 interface TapPageProps {
   socket: any;
-  userId: number;
+  userId: any;
 }
 
 const TapPage = ({ socket, userId }: TapPageProps) => {
