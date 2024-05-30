@@ -102,7 +102,7 @@ const App = () => {
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
       {/* <ExpandDemo /> */}
-      <p style={{ color: "red" }}>{initDataUnsafe?.user?.id}</p>
+      <p style={{ color: "red" }}>this is user_id: {initDataUnsafe?.user?.id}</p>
       {/* <DemoApp
         onChangeTransition={() => setSmoothButtonsTransition(state => !state)}
       /> */}
