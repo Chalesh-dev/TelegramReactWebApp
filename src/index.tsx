@@ -1,19 +1,20 @@
-import React, { DispatchWithoutAction, FC, useState } from 'react';
-import ReactDOM from 'react-dom/client';
+import React, { DispatchWithoutAction, FC, useState } from "react";
+import ReactDOM from "react-dom/client";
 import {
   useThemeParams,
   WebAppProvider,
-} from '@vkruglikov/react-telegram-web-app';
-import { ConfigProvider, theme } from 'antd';
-import 'antd/dist/reset.css';
-import './index.css';
-import MainButtonDemo from './MainButtonDemo';
-import ShowPopupDemo from './ShowPopupDemo';
-import HapticFeedbackDemo from './HapticFeedbackDemo';
-import ScanQrPopupDemo from './ScanQrPopupDemo';
-import ExpandDemo from './ExpandDemo';
-import useBetaVersion from './useBetaVersion';
+} from "@vkruglikov/react-telegram-web-app";
+import { ConfigProvider, theme } from "antd";
+import "antd/dist/reset.css";
+import "./index.css";
+import MainButtonDemo from "./MainButtonDemo";
+import ShowPopupDemo from "./ShowPopupDemo";
+import HapticFeedbackDemo from "./HapticFeedbackDemo";
+import ScanQrPopupDemo from "./ScanQrPopupDemo";
+import ExpandDemo from "./ExpandDemo";
+import useBetaVersion from "./useBetaVersion";
 import { useInitData } from "@vkruglikov/react-telegram-web-app";
+import { TelegramProvider } from "./context/TelegramContext";
 
 // const DemoApp: FC<{
 //   onChangeTransition: DispatchWithoutAction;
@@ -87,10 +88,8 @@ import { useInitData } from "@vkruglikov/react-telegram-web-app";
 // };
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement,
+  document.getElementById("root") as HTMLElement
 );
-
-
 
 const App = () => {
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
@@ -99,12 +98,16 @@ const App = () => {
 
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
-
-      {/* <ExpandDemo /> */}
-      <p style={{ color: "red" }}>this is user_id: {initDataUnsafe?.user?.id}</p>
-      {/* <DemoApp
+      <TelegramProvider>
+        <p>thi is  demo ....</p>
+        {/* <ExpandDemo /> */}
+        {/* <p style={{ color: "red" }}>
+          this is user_id: {initDataUnsafe?.user?.id}
+        </p> */}
+        {/* <DemoApp
         onChangeTransition={() => setSmoothButtonsTransition(state => !state)}
       /> */}
+      </TelegramProvider>
     </WebAppProvider>
   );
 };
