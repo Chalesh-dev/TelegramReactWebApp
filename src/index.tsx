@@ -158,8 +158,7 @@ const App = () => {
         (data: any) => {}
       );
 
-      // setUserBalance(Number(user?.user_balance));
-      setUserBalance(2000);
+      setUserBalance(Number(user?.user_balance));
       setUserTrophy(user?.user_trophies);
       setUserMultiTap(Number(user?.UserMultiTap));
 
