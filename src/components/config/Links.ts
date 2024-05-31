@@ -19,8 +19,7 @@ export const links = [
   {
     src: "./images/fire.png",
     name: "boost",
-    link: "/tap",
-    // link: "/boost",
+    link: "/boost",
   },
   {
     src: "./images/stats.png",
