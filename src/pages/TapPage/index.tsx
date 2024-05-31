@@ -64,7 +64,7 @@ const TapPage: React.FC<TapPageProps> = ({
       "tap",
       {
         // id: userId,
-        level: (Number(userMultiTap) * fireMode).toString(),
+        level: (Number(userMultiTap)).toString(),
       },
       (data: any) => {}
     );

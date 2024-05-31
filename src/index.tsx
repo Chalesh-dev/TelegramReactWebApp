@@ -26,7 +26,7 @@ import { io } from "socket.io-client";
 import { SocketProvider } from "./context/SocketContext";
 import StatsPage from "./pages/StatsPage";
 import BoostPage from "./pages/BoostPage";
-//import socketIO from "socket.io-client";
+
 
 // const DemoApp: FC<{
 //   onChangeTransition: DispatchWithoutAction;
@@ -198,7 +198,7 @@ const App = () => {
                 <TapPage
                   socket={socket}
                   userId={telegramUserId}
-                  userBalance={userBalance}
+                  userBalance={Number(userBalance)}
                   setUserBalance={setUserBalance}
                   user_trophy={userTrophy}
                   userMultiTap={userMultiTap}
@@ -220,7 +220,7 @@ const App = () => {
               element={
                 <BoostPage
                   userId={Number(telegramUserId)}
-                  userBalance={userBalance}
+                  userBalance={Number(userBalance)}
                   multiScore={BoostMultiScore}
                   multiLevel={BoostMultiLevel}
                   energyLimitScore={BoostEnergyLimitScore}
