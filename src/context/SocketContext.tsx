@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 const SocketContext = createContext({});
@@ -14,7 +14,6 @@ const SocketProvider = ({
   const pathname = location.pathname.split("/")[1];
 
   useEffect(() => {
-    alert('salam')
     if (pathname !== "tap") {
       socket.emit("submit", "");
     }

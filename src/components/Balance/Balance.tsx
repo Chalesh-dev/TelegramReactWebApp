@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Trophy } from "../Icons";
 
 interface BalanceType {
-  border?: string;
+  border?: boolean;
   cup?: boolean;
   description?: string;
   referral?: boolean;

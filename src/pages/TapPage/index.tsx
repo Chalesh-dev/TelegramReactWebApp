@@ -1,11 +1,10 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect } from "react";
 import bgImg from "../../assets/bg_images/bg-2.png";
 import RootLayout from "../../components/RootLayout/RootLayout";
 import Loading from "../../components/LoadingComp/Loading";
 import Balance from "../../components/Balance/Balance";
 import CoinIcon from "../../components/Tap/CoinIcon";
 import ScoreBar from "../../components/Tap/ScoreBar";
-import { useLocation } from "react-router-dom";
 
 interface TapPageProps {
   socket: any;
@@ -34,26 +33,6 @@ const TapPage: React.FC<TapPageProps> = ({
   currentEnergy,
   setCurrentEnergy,
 }) => {
-  const location = useLocation();
-  const pathname = location.pathname.split("/")[1];
-
-  // useEffect(() => {
-  //   if (pathname !== "tap") {
-  //     socket.emit("submit", "");
-  //   }
-  // }, [pathname]);
-
-  console.log(
-    userId,
-    "balance:",
-    userBalance,
-    "user_trophy:",
-    user_trophy,
-    "tapInfo:",
-    userMultiTap,
-    "maxEnergyLimit:",
-    maxEnergyLimit
-  );
 
   useEffect(() => {
     socket.on("top", (data: any) => {
@@ -70,30 +49,31 @@ const TapPage: React.FC<TapPageProps> = ({
       }
     });
 
-    socket.emit(
-      "id",
-      {
-        id: userId,
-        limit: maxEnergyLimit,
-        speed: energyFillSpeed,
-        energy: currentEnergy,
-      },
-      (data: any) => {}
-    );
+    // socket.emit(
+    //   "id",
+    //   {
+    //     id: userId,
+    //     limit: maxEnergyLimit,
+    //     speed: energyFillSpeed,
+    //     energy: currentEnergy,
+    //   },
+    //   (data: any) => {}
+    // );
   }, [socket]);
 
-  useEffect(() => {
-    socket.emit(
-      "id",
-      {
-        id: userId,
-        limit: maxEnergyLimit,
-        speed: energyFillSpeed,
-        energy: currentEnergy,
-      },
-      (data: any) => {}
-    );
-  }, [maxEnergyLimit, energyFillSpeed]);
+  //todo: change this or emit when user upgrade its energy fill speed in boost page
+  // useEffect(() => {
+  //   socket.emit(
+  //     "id",
+  //     {
+  //       id: userId,
+  //       limit: maxEnergyLimit,
+  //       speed: energyFillSpeed,
+  //       energy: currentEnergy,
+  //     },
+  //     (data: any) => {}
+  //   );
+  // }, [maxEnergyLimit, energyFillSpeed]);
 
   const handleCoinClick = () => {
     socket.emit(

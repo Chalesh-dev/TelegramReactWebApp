@@ -24,6 +24,7 @@ import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 import TapPage from "./pages/TapPage";
 import { io } from "socket.io-client";
 import { SocketProvider } from "./context/SocketContext";
+import StatsPage from "./pages/StatsPage";
 // import socketIO from "socket.io-client";
 
 // const DemoApp: FC<{
@@ -120,10 +121,14 @@ const App = () => {
   const [energyFillSpeed, setEnergyFillSpeed] = useState<number>(0);
   const [currentEnergy, setCurrentEnergy] = useState<number>(0);
 
+  /**PATH */
+  const path_get_userInfo =
+    process.env.REACT_APP_URL + "api/auth/login-register/";
+  /**PATH */
+
   const getUserInfo = async () => {
-    const path_url = process.env.REACT_APP_URL + "api/auth/login-register/";
     try {
-      const response = await fetch(path_url + telegramUserId, {
+      const response = await fetch(path_get_userInfo + telegramUserId, {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -191,6 +196,12 @@ const App = () => {
                   currentEnergy={currentEnergy}
                   setCurrentEnergy={setCurrentEnergy}
                 />
+              }
+            />
+            <Route
+              path="/stats"
+              element={
+                <StatsPage userId={telegramUserId} userBalance={userBalance} />
               }
             />
           </Routes>

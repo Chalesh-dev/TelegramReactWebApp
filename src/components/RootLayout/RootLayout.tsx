@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { links } from "../config/Links";
 import LinkContainer from "../LinkContainer";
 import "./RootLayout.css";
+import LayoutLoading from "../LoadingComp/LayoutLoading";
 
 const RootLayout = ({
   children,
@@ -10,6 +11,18 @@ const RootLayout = ({
   children: React.ReactNode;
   bg_img: string;
 }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = bg_img;
+    img.onload = () => setImageLoaded(true);
+  }, [bg_img]);
+
+  if (!imageLoaded) {
+    return <LayoutLoading />;
+  }
+
   return (
     <>
       <div className="layout" style={{ backgroundImage: `url(${bg_img})` }}>
