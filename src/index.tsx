@@ -136,28 +136,25 @@ const App = () => {
         },
       });
       const { user } = await response.json();
-      // userInfo.current = user;
-      console.log("pppp", user);
-
-      setUserBalance(Number(user?.user_balance));
-      setUserTrophy(user?.user_trophies);
-      setUserMultiTap(Number(user?.UserMultiTap));
-      console.log("eer", user?.UserMultiTap);
-
-      setMaxEnergyLimit(Number(user?.user_energy_limit));
-      setEnergyFillSpeed(Number(user?.UserEnergySpeed));
-      setCurrentEnergy(Number(user?.UserCurrentEnergy));
 
       socket.emit(
         "id",
         {
-          id: telegramUserId,
+          id: Number(telegramUserId),
           limit: Number(user?.user_energy_limit),
           speed: Number(user?.UserEnergySpeed),
           energy: Number(user?.UserCurrentEnergy),
         },
         (data: any) => {}
       );
+
+      setUserBalance(Number(user?.user_balance));
+      setUserTrophy(user?.user_trophies);
+      setUserMultiTap(Number(user?.UserMultiTap));
+
+      setMaxEnergyLimit(Number(user?.user_energy_limit));
+      setEnergyFillSpeed(Number(user?.UserEnergySpeed));
+      setCurrentEnergy(Number(user?.UserCurrentEnergy));
 
       // console.log("rtt", user?.user?.energy_many[0]);
 

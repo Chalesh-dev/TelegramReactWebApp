@@ -14,7 +14,6 @@ const SocketProvider = ({
   const pathname = location.pathname.split("/")[1];
 
   useEffect(() => {
-    alert('e3e3')
     if (pathname !== "tap") {
       socket.emit("submit", "");
     }

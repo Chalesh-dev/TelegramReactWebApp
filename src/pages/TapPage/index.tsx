@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import bgImg from "../../assets/bg_images/bg-2.png";
 import RootLayout from "../../components/RootLayout/RootLayout";
 import Loading from "../../components/LoadingComp/Loading";
@@ -17,8 +17,8 @@ interface TapPageProps {
   userBalance?: number;
   currentEnergy?: number;
   energyFillSpeed?: number;
-  setUserBalance?: React.Dispatch<React.SetStateAction<number>>;
-  setCurrentEnergy?: React.Dispatch<React.SetStateAction<number>>;
+  setUserBalance: React.Dispatch<React.SetStateAction<number>>;
+  setCurrentEnergy: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const TapPage: React.FC<TapPageProps> = ({
@@ -35,29 +35,13 @@ const TapPage: React.FC<TapPageProps> = ({
 }) => {
   useEffect(() => {
     socket.on("top", (data: any) => {
-      if (setUserBalance) {
-        setUserBalance((prevState) => (prevState ?? 0) + Number(data));
-      }
-      // scoreRef.current = data;
-      // setCurrentSpark((prevSpark) => Math.max(prevSpark - data, 0));
+      setUserBalance((prevState) => (prevState ?? 0) + Number(data.level));
+      setCurrentEnergy((prevState) => (prevState ?? 0) - Number(data.energy));
     });
 
     socket.on("energy", (data: any) => {
-      if (setCurrentEnergy) {
-        setCurrentEnergy(Number(data));
-      }
+      setCurrentEnergy(Number(data));
     });
-
-    // socket.emit(
-    //   "id",
-    //   {
-    //     id: userId,
-    //     limit: maxEnergyLimit,
-    //     speed: energyFillSpeed,
-    //     energy: currentEnergy,
-    //   },
-    //   (data: any) => {}
-    // );
   }, [socket]);
 
   //todo: change this or emit when user upgrade its energy fill speed in boost page
@@ -73,19 +57,17 @@ const TapPage: React.FC<TapPageProps> = ({
   //     (data: any) => {}
   //   );
   // }, [maxEnergyLimit, energyFillSpeed]);
+  const [fireMode, setFireMode] = useState(1);
 
   const handleCoinClick = () => {
     socket.emit(
       "tap",
       {
         // id: userId,
-        level: userMultiTap,
+        level: (Number(userMultiTap) * fireMode).toString(),
       },
-      function (data: any) {
-        console.log("data:", data);
-      }
+      (data: any) => {}
     );
-    //   //   // setBalance((prevBalance) => prevBalance + Number(user?.level?.unit));
   };
 
   return (
