@@ -17,17 +17,17 @@ const Card = ({
     >
       <div className="flex items-center gap-4">
         {icon}
-        <div className="flex flex-col justify-evenly gap-1">
+        <div className="flex flex-col justify-evenly gap-1 xs:text-xs text-[0.7rem]">
           {name ? name : "---"}
           <div className="flex items-center gap-2">
             <div className="flex gap-1.5 items-center">
               <img src="./images/coin.png" alt="coin" className="w-4 h-4" />
-              <span className="text-sm">
+              <span className="xs:text-xs text-[0.7rem]">
                 {coin_num ? Number(coin_num).toLocaleString() : "---"}
               </span>
             </div>
             {level && (
-              <div className="flex items-center text-sm text-gray-400">
+              <div className="flex items-center xs:text-xs text-[0.7rem] text-gray-400">
                 | + {level ? level : "---"} level
               </div>
             )}

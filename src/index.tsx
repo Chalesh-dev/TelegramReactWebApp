@@ -18,7 +18,7 @@ import ShowPopupDemo from "./ShowPopupDemo";
 import HapticFeedbackDemo from "./HapticFeedbackDemo";
 import ScanQrPopupDemo from "./ScanQrPopupDemo";
 import useBetaVersion from "./useBetaVersion";
-import { useInitData } from "@vkruglikov/react-telegram-web-app";
+// import { useInitData } from "@vkruglikov/react-telegram-web-app";
 
 import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
 import TapPage from "./pages/TapPage";
@@ -105,14 +105,14 @@ const root = ReactDOM.createRoot(
 
 /**socket */
 // const socket = socketIO.connect("https://socket.spxswap.com");
-const socket = io("https://socket.spxswap.com");
-// const socket = "frrfr";
+// const socket = io("https://socket.spxswap.com");
+const socket = "frrfr";
 
 const App = () => {
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
-  const [initDataUnsafe] = useInitData();
-  const telegramUserId = initDataUnsafe?.user?.id;
-  //const telegramUserId = 123456;
+  // const [initDataUnsafe] = useInitData();
+  // const telegramUserId = initDataUnsafe?.user?.id;
+  const telegramUserId = 123456;
 
   const [loading, setLoading] = useState<boolean>(false);
   const [userBalance, setUserBalance] = useState<number>(0);
@@ -147,16 +147,16 @@ const App = () => {
 
       console.log("userr", user);
 
-      socket.emit(
-        "id",
-        {
-          id: Number(telegramUserId),
-          limit: Number(user?.user_energy_limit),
-          speed: Number(user?.UserEnergySpeed),
-          energy: Number(user?.UserCurrentEnergy),
-        },
-        (data: any) => {}
-      );
+      // socket.emit(
+      //   "id",
+      //   {
+      //     id: Number(telegramUserId),
+      //     limit: Number(user?.user_energy_limit),
+      //     speed: Number(user?.UserEnergySpeed),
+      //     energy: Number(user?.UserCurrentEnergy),
+      //   },
+      //   (data: any) => {}
+      // );
 
       setUserBalance(Number(user?.user_balance));
       setUserTrophy(user?.user_trophies);
