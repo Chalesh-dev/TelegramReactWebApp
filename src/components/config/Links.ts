@@ -8,8 +8,7 @@ export const links = [
   {
     src: "./images/check-list.png",
     name: "task",
-    link: "/tap",
-    // link: "/task",
+    link: "/task",
   },
   {
     src: "./images/coin-icon.png",
@@ -24,7 +23,6 @@ export const links = [
   {
     src: "./images/stats.png",
     name: "stats",
-    // link: "/tap",
     link: "/stats",
   },
 ];

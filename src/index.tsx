@@ -18,14 +18,16 @@ import ShowPopupDemo from "./ShowPopupDemo";
 import HapticFeedbackDemo from "./HapticFeedbackDemo";
 import ScanQrPopupDemo from "./ScanQrPopupDemo";
 import useBetaVersion from "./useBetaVersion";
-import { useInitData } from "@vkruglikov/react-telegram-web-app";
+// import { useInitData } from "@vkruglikov/react-telegram-web-app";
 
-import { BrowserRouter, Link, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import TapPage from "./pages/TapPage";
 import { io } from "socket.io-client";
 import { SocketProvider } from "./context/SocketContext";
 import StatsPage from "./pages/StatsPage";
 import BoostPage from "./pages/BoostPage";
+import TaskPage from "./pages/TaskPage";
+import TrophyPage from "./pages/TrophyPage";
 
 // const DemoApp: FC<{
 //   onChangeTransition: DispatchWithoutAction;
@@ -104,15 +106,16 @@ const root = ReactDOM.createRoot(
 
 /**socket */
 // const socket = socketIO.connect("https://socket.spxswap.com");
-const socket = io("https://socket.spxswap.com");
-// const socket = "frrfr";
+// const socket = io("https://socket.spxswap.com");
+const socket = "frrfr";
 
 const App = () => {
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
-  const [initDataUnsafe] = useInitData();
-  const telegramUserId = initDataUnsafe?.user?.id;
-  // const telegramUserId = 123456;
+  // const [initDataUnsafe] = useInitData();
+  // const telegramUserId = initDataUnsafe?.user?.id;
+  const telegramUserId = 123456;
 
+  const [init, setInit] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [userBalance, setUserBalance] = useState<number>(0);
   const [userTrophy, setUserTrophy] = useState<string>("");
@@ -132,6 +135,35 @@ const App = () => {
     process.env.REACT_APP_URL + "api/auth/login-register/";
   /**PATH */
 
+  // useEffect(() => {
+  //   // if (currentEnergy < maxEnergyLimit) {
+  //   const intervalId = setInterval(() => {
+  //     setCurrentEnergy((prevState) => prevState + Number(energyFillSpeed));
+  //   }, 1000);
+
+  //   // }
+  // }, [currentEnergy]);
+
+  socket.on("energy", (data: any) => {
+    if (data) {
+      setInit(true);
+    }
+  });
+
+  useEffect(() => {
+    setInterval(() => {
+      if (currentEnergy < maxEnergyLimit) {
+        setCurrentEnergy((prevState) => {
+          if (prevState + Number(energyFillSpeed) < maxEnergyLimit) {
+            return prevState + Number(energyFillSpeed);
+          } else {
+            return maxEnergyLimit;
+          }
+        });
+      }
+    }, 1000);
+  }, [init]);
+
   const getUserInfo = async () => {
     setLoading(true);
     try {
@@ -146,16 +178,16 @@ const App = () => {
 
       console.log("userr", user);
 
-      socket.emit(
-        "id",
-        {
-          id: Number(telegramUserId),
-          limit: Number(user?.user_energy_limit),
-          speed: Number(user?.UserEnergySpeed),
-          energy: Number(user?.UserCurrentEnergy),
-        },
-        (data: any) => {}
-      );
+      // socket.emit(
+      //   "id",
+      //   {
+      //     id: Number(telegramUserId),
+      //     limit: Number(user?.user_energy_limit),
+      //     speed: Number(user?.UserEnergySpeed),
+      //     energy: Number(user?.UserCurrentEnergy),
+      //   },
+      //   (data: any) => {}
+      // );
 
       setUserBalance(Number(user?.user_balance));
       setUserTrophy(user?.user_trophies);
@@ -184,6 +216,17 @@ const App = () => {
   useEffect(() => {
     getUserInfo();
   }, [telegramUserId]);
+
+  const trophies = [
+    {
+      title: "amir",
+      amount: 1000,
+    },
+    {
+      title: "ppp",
+      amount: 1000,
+    },
+  ];
 
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
@@ -228,6 +271,28 @@ const App = () => {
                   rechargingSpeedLevel={BoostRechargingLevel}
                   loading={loading}
                   setUserBalance={setUserBalance}
+                />
+              }
+            />
+            <Route
+              path="/task"
+              element={
+                <TaskPage
+                  userId={telegramUserId}
+                  userBalance={Number(userBalance)}
+                  setUserBalance={setUserBalance}
+                  loadingRoot={loading}
+                />
+              }
+            />
+            <Route
+              path="/trophy"
+              element={
+                <TrophyPage
+                  userBalance={Number(userBalance)}
+                  trophies={trophies}
+                  user_trophy={"aaa"}
+                  loading={loading}
                 />
               }
             />

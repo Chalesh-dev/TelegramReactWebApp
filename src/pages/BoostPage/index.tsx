@@ -14,6 +14,7 @@ import RootLayout from "../../components/RootLayout/RootLayout";
 import DailyBooster from "../../components/DailyBooster";
 import CardLoading from "../../components/CardLoading";
 import Card from "../../components/Card";
+import { useNavigate } from "react-router-dom";
 
 interface BoostPageProps {
   loading: boolean;
@@ -46,10 +47,8 @@ const BoostPage = ({
   const [openRecharging, setOpenRecharging] = useState(false);
   const [openBot, setOpenBot] = useState(false);
   const [openGuru, setOpenGuru] = useState(false);
-
-  const handleTapingGuru = () => {
-    setOpenGuru(true);
-  };
+  const [openFullTank, setOpenFullTank] = useState(false);
+  const navigate = useNavigate();
 
   const handleMulti = () => {
     setUserBalance((prevState) => prevState - multiScore);
@@ -62,6 +61,16 @@ const BoostPage = ({
   const handleRecharging = () => {
     setUserBalance((prevState) => prevState - rechargingSpeedScore);
     setOpenRecharging(false);
+  };
+
+  const handleActiveGuru = () => {
+    setOpenGuru(false);
+    navigate('/tap');
+  };
+
+  const handleActiveTank = () => {
+    setOpenFullTank(false);
+    navigate('/tap');
   };
 
   return (
@@ -85,10 +94,12 @@ const BoostPage = ({
             icon={<FlameIcon size={28} color={"yellow"} />}
             name={"Taping Guru"}
             remain_num={1}
-            onClick={handleTapingGuru}
+            onClick={() => setOpenGuru(true)}
           />
           <DailyBooster
-            onClick={() => {}}
+            onClick={() => {
+              setOpenFullTank(true);
+            }}
             icon={<FlashIcon size={28} color={"yellow"} />}
             name={"Full Tank"}
             remain_num={3}
@@ -150,7 +161,6 @@ const BoostPage = ({
           boostTapInfo={`+${multiLevel} per tap for each level.`}
           boostTokenRequired={multiScore}
           boostLevel={multiLevel}
-          balance={userBalance}
           disabled={Number(userBalance) < Number(multiScore)}
           onClick={handleMulti}
         ></Modal>
@@ -166,7 +176,6 @@ const BoostPage = ({
           boostTapInfo={`+${energyLimitLevel} per tap for each level.`}
           boostTokenRequired={energyLimitScore}
           boostLevel={energyLimitLevel}
-          balance={userBalance}
           onClick={handleEnergyLimit}
           disabled={Number(userBalance) < Number(energyLimitScore)}
         ></Modal>
@@ -182,30 +191,36 @@ const BoostPage = ({
           boostTapInfo={`+${rechargingSpeedLevel} per tap for each level.`}
           boostTokenRequired={rechargingSpeedScore}
           boostLevel={rechargingSpeedLevel}
-          balance={userBalance}
           disabled={Number(userBalance) < Number(rechargingSpeedScore)}
           onClick={handleRecharging}
         ></Modal>
       )}
 
       {/* Guru&tank */}
-      {/* {openGuru && (
+      {openGuru && (
         <Modal
           setOpenModal={setOpenGuru}
           openModal={openGuru}
           icon={<FlameIcon color={"yellow"} size={58} />}
           boostTitle={"Taping Guru"}
-          boostDescription={
-            "Increase amount of TAP you can earn per one tap for 20 seconds."
-          }
-          boostTapInfo={`+45 per tap for each level.`}
+          boostDescription={"Multiply your tap income by x5 for 20 seconds."}
+          boostTapInfo={"Do not use energy while active."}
           tap_tank={true}
-          boostTokenRequired={recharging?.amount}
-          boostLevel={recharging?.title}
-          balance={user?.balance}
-          onClick={handleRecharging}
+          onClick={handleActiveGuru}
         ></Modal>
-      )} */}
+      )}
+
+      {openFullTank && (
+        <Modal
+          setOpenModal={setOpenFullTank}
+          openModal={openFullTank}
+          icon={<FlashIcon color={"yellow"} size={58} />}
+          boostTitle={"Full Tank"}
+          boostDescription={"Fill your energy to the max."}
+          tap_tank={true}
+          onClick={handleActiveTank}
+        ></Modal>
+      )}
     </RootLayout>
   );
 };

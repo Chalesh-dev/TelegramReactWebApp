@@ -1,0 +1,6 @@
+.container {
+  border-radius: 8px;
+  overflow-y: auto;
+  margin-top: 1rem;
+  height: calc(100vh - 320px);
+}

@@ -62,7 +62,7 @@ const CoinIcon = ({ balance, increment, onCoinClick, currentSpark }) => {
 
   return (
     <div className="w-full flex justify-center items-center">
-      <div className="w-[150px] h-[150px] rounded-full relative">
+      <div className="w-[200px] h-[200px] rounded-full relative">
         <img
           className="cursor-pointer w-full h-full"
           src="./images/coin.png"
@@ -74,7 +74,7 @@ const CoinIcon = ({ balance, increment, onCoinClick, currentSpark }) => {
             handleClick();
             handleClickText(e);
           }}
-          className="absolute w-[150px] h-[150px] rounded-full bg-transparent z-20 top-0 right-0"
+          className="absolute w-[200px] h-[200px] rounded-full bg-transparent z-20 top-0 right-0"
         />
       </div>
       {texts.map((text, index) => (

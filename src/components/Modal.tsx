@@ -6,19 +6,21 @@ interface ModalTypes {
   openModal: boolean;
   task?: boolean;
   taskInfo?: {
-    title: string;
-    description: string;
-    number: number;
-  };
+    title?: string;
+    description?: string;
+    number?: number;
+    body?: string;
+    link?: URL;
+    amount?: number;
+  } | null;
   children?: React.ReactNode;
-  icon: React.ReactElement<any, any>;
+  icon?: React.ReactElement<any, any>;
   boostTitle?: string;
   boostDescription?: string;
   boostTapInfo?: string;
   boostTokenRequired?: number;
   boostLevel?: number;
-  balance: number;
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   tap_tank?: boolean;
   disabled?: boolean;
 }
@@ -35,7 +37,6 @@ const Modal = ({
   boostTapInfo,
   boostTokenRequired,
   boostLevel,
-  balance,
   onClick,
   tap_tank,
   disabled,
@@ -43,7 +44,7 @@ const Modal = ({
   return (
     <div
       className={`${
-        openModal && ("translate-y-5")
+        (openModal && task) ? 'translate-y-24' : 'translate-y-5'
       } transition-all ease-linear duration-700 fixed w-full h-full bg-gray-800/95 right-0 top-0 z-[999] flex flex-col xs:p-5 py-1 px-2 shadow-lg drop-shadow-lg`}
       //   className={clsx(
       //     openModal ? "translate-y-0" : "translate-y-[100vh]",
@@ -60,8 +61,8 @@ const Modal = ({
       <>
         {task ? (
           <div className="flex flex-col xs:gap-2 gap-1">
-            <h1 className="capitalize text-2xl">{taskInfo?.title}</h1>
-            <p className="text-slate-400">{taskInfo?.description}</p>
+            <h1 className="capitalize text-2xl text-center">{taskInfo?.title}</h1>
+            <p className="text-slate-400 text-center text-sm">{taskInfo?.body}</p>
             <div className="my-2 bg-slate-900 py-2 px-3 rounded-md flex gap-3 items-center">
               <img
                 className="w-[40px] h-[40px]"
@@ -70,7 +71,7 @@ const Modal = ({
               />
               <div className="flex flex-col gap-1 items-center">
                 <span className="text-white">Reward</span>
-                <span>{Number(taskInfo?.number).toLocaleString()}</span>
+                <span>{Number(taskInfo?.amount).toLocaleString()}</span>
               </div>
             </div>
             <h1 className="text-xl text-white">Your Tasks</h1>
@@ -98,7 +99,9 @@ const Modal = ({
                 <div className="xs:text-2xl text-xl">+ {boostLevel} level</div>
               </div>
             )}
-            {tap_tank && <h1 className="font-bold xs:text-4xl text-2xl">Free</h1>}
+            {tap_tank && (
+              <h1 className="font-bold xs:text-4xl text-2xl">Free</h1>
+            )}
             <button
               onClick={onClick}
               className={`w-full bg-gradient-to-b from-slate-500 to-slate-700 xs:mt-10 mt-5 xs:py-5 py-2.5 rounded-md ${
