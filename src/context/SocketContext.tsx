@@ -13,11 +13,11 @@ const SocketProvider = ({
   const location = useLocation();
   const pathname = location.pathname.split("/")[1];
 
-  // useEffect(() => {
-  //   if (pathname !== "tap") {
-  //     socket.emit("submit", "");
-  //   }
-  // }, [pathname]);
+  useEffect(() => {
+    if (pathname !== "tap") {
+      socket.emit("submit", "");
+    }
+  }, [pathname]);
 
   const values = {};
 

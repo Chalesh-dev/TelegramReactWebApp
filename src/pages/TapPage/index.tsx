@@ -33,16 +33,16 @@ const TapPage: React.FC<TapPageProps> = ({
   currentEnergy,
   setCurrentEnergy,
 }) => {
-  // useEffect(() => {
-  //   socket.on("top", (data: any) => {
-  //     setUserBalance((prevState) => (prevState ?? 0) + Number(data.level));
-  //     setCurrentEnergy((prevState) => (prevState ?? 0) - Number(data.energy));
-  //   });
+  useEffect(() => {
+    socket.on("top", (data: any) => {
+      setUserBalance((prevState) => (prevState ?? 0) + Number(data.level));
+      setCurrentEnergy((prevState) => (prevState ?? 0) - Number(data.energy));
+    });
 
-  //   socket.on("energy", (data: any) => {
-  //     setCurrentEnergy(Number(data));
-  //   });
-  // }, [socket]);
+    socket.on("energy", (data: any) => {
+      setCurrentEnergy(Number(data));
+    });
+  }, [socket]);
 
   //todo: change this or emit when user upgrade its energy fill speed in boost page
   // useEffect(() => {
@@ -60,14 +60,14 @@ const TapPage: React.FC<TapPageProps> = ({
   const [fireMode, setFireMode] = useState(1);
 
   const handleCoinClick = () => {
-    // socket.emit(
-    //   "tap",
-    //   {
-    //     // id: userId,
-    //     level: (Number(userMultiTap)).toString(),
-    //   },
-    //   (data: any) => {}
-    // );
+    socket.emit(
+      "tap",
+      {
+        // id: userId,
+        level: Number(userMultiTap).toString(),
+      },
+      (data: any) => {}
+    );
   };
 
   return (
