@@ -2,6 +2,17 @@ import React from "react";
 import ScoreBarComp from "../ScoreBarComp";
 import { BsCoin } from "react-icons/bs";
 
+interface CardBarCompTypes {
+  img: string;
+  title: string;
+  price: number;
+  disabled: boolean;
+  present_value: number;
+  final_value: number;
+  key: number;
+  onCLick?: React.MouseEventHandler<HTMLButtonElement>;
+}
+
 const CardBarComp = ({
   img,
   title,
@@ -11,7 +22,7 @@ const CardBarComp = ({
   final_value,
   key,
   onCLick,
-}) => {
+}: CardBarCompTypes) => {
   return (
     <div
       key={key}

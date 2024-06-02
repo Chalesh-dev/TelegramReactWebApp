@@ -28,6 +28,7 @@ import StatsPage from "./pages/StatsPage";
 import BoostPage from "./pages/BoostPage";
 import TaskPage from "./pages/TaskPage";
 import TrophyPage from "./pages/TrophyPage";
+import RefPage from "./pages/RefPage";
 
 // const DemoApp: FC<{
 //   onChangeTransition: DispatchWithoutAction;
@@ -104,51 +105,84 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
-/**socket */
-// const socket = socketIO.connect("https://socket.spxswap.com");
+/*********************socket ********************/
 // const socket = io("https://socket.spxswap.com");
-const socket = "frrfr";
+// const socket = io("ws://192.168.88.166:8080");
+// const socket = "frrfr";
 
 const App = () => {
+  const [socket, setSocket] = useState(null);
+  useEffect(() => {
+    const socket = io("ws://192.168.88.168:8080");
+
+    //@ts-ignore
+    setSocket(socket);
+    socket.on("connect", () => {
+      console.log("eee");
+      socket.emit("join", "C++");
+    });
+
+    // socket.emit("user_login", 12, (data: any) => {
+    //   console.log(data);
+    // });
+  }, []);
+
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
   // const [initDataUnsafe] = useInitData();
   // const telegramUserId = initDataUnsafe?.user?.id;
   const telegramUserId = 123456;
 
+  /*********************Initial states*****************/
   const [init, setInit] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
+
+  /********************user balance ******************/
   const [userBalance, setUserBalance] = useState<number>(0);
+
+  /********************user trophy ******************/
   const [userTrophy, setUserTrophy] = useState<string>("");
-  const [userMultiTap, setUserMultiTap] = useState<number>(0);
+
+  /********************Tap page *********************/
+  const [userLevel, setUserLevel] = useState<number>(0);
   const [maxEnergyLimit, setMaxEnergyLimit] = useState<number>(0);
   const [energyFillSpeed, setEnergyFillSpeed] = useState<number>(0);
   const [currentEnergy, setCurrentEnergy] = useState<number>(0);
-  const [BoostMultiScore, setBoostMultiScore] = useState<number>(0);
-  const [BoostMultiLevel, setBoostMultilevel] = useState<number>(0);
-  const [BoostEnergyLimitScore, setBoostEnergyLimitScore] = useState<number>(0);
-  const [BoostEnergyLimitLevel, setBoostEnergyLimitLevel] = useState<number>(0);
-  const [BoostRechargingScore, setBoostRechargingScore] = useState<number>(0);
-  const [BoostRechargingLevel, setBoostRechargingLevel] = useState<number>(0);
 
-  /**PATH */
-  const path_get_userInfo =
-    process.env.REACT_APP_URL + "api/auth/login-register/";
-  /**PATH */
+  //******************boost page *******************/
+  const [boostMultiScore, setBoostMultiScore] = useState<number>(0);
+  const [boostMultiLevel, setBoostMultilevel] = useState<number>(0);
 
-  // useEffect(() => {
-  //   // if (currentEnergy < maxEnergyLimit) {
-  //   const intervalId = setInterval(() => {
-  //     setCurrentEnergy((prevState) => prevState + Number(energyFillSpeed));
-  //   }, 1000);
+  const [boostEnergyLimitScore, setBoostEnergyLimitScore] = useState<number>(0);
+  const [boostEnergyLimitLevel, setBoostEnergyLimitLevel] = useState<number>(0);
 
-  //   // }
-  // }, [currentEnergy]);
+  const [boostRechargingScore, setBoostRechargingScore] = useState<number>(0);
+  const [boostRechargingLevel, setBoostRechargingLevel] = useState<number>(0);
 
-  socket.on("energy", (data: any) => {
-    if (data) {
-      setInit(true);
-    }
-  });
+  const [guruRemains, setGuruRemains] = useState(3);
+  const [guruState, setGuruState] = useState(false);
+
+  const [TankRemains, setTankRemains] = useState(3);
+  const [startTankTime, setStartTankTime] = useState("");
+
+  /********************Stats page**************************/
+  const [totalShareBalance, setTotalShareBalance] = useState(0);
+  const [totalTouches, setTotalTouches] = useState(0);
+  const [totalPlayers, setTotalPlayers] = useState(0);
+  const [dailyUsers, setDailyUsers] = useState(0);
+  const [onlinePlayers, setOnlinePlayers] = useState(0);
+
+  /******************Task page ***************************/
+  const [tasks, setTasks] = useState([]);
+  const [unClaimedLeagues, setUnClaimedLeagues] = useState([]);
+  const [claimableLeagues, setClaimableLeagues] = useState([]);
+  const [unClaimedRefs, setUnClaimedRefs] = useState([]);
+  const [claimableRefs, setClaimableRefs] = useState([]);
+
+  /******************Ref page ****************************/
+
+  /*********************End ******************************/
+
+  /*********************sockets *************************/
 
   useEffect(() => {
     setInterval(() => {
@@ -164,69 +198,106 @@ const App = () => {
     }, 1000);
   }, [init]);
 
-  const getUserInfo = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(path_get_userInfo + telegramUserId, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-      const { user } = await response.json();
+  // useEffect(() => {
+  //   socket.on("energy", (data: any) => {
+  //     if (data) {
+  //       setInit(true);
+  //     }
+  //   });
 
-      console.log("userr", user);
+  //   socket.emit("user_login", 12, (data: any) => {
+  //     console.log(data);
+  //   });
+  // }, []);
 
-      // socket.emit(
-      //   "id",
-      //   {
-      //     id: Number(telegramUserId),
-      //     limit: Number(user?.user_energy_limit),
-      //     speed: Number(user?.UserEnergySpeed),
-      //     energy: Number(user?.UserCurrentEnergy),
-      //   },
-      //   (data: any) => {}
-      // );
+  //todo: am i put these sockets in useEffect or not? // fix the socket names
+  // useEffect(() => {
+  //   setLoading(true);
+  //   socket.on("socket_name_get_user_balance", (data: any) => {
+  //     setUserBalance(data?.userBalance);
+  //   });
 
-      setUserBalance(Number(user?.user_balance));
-      setUserTrophy(user?.user_trophies);
-      setUserMultiTap(Number(user?.UserMultiTap));
+  //   socket.on("socket_name_get_user_trophy", (data: any) => {
+  //     setUserTrophy(data?.trophy);
+  //   });
 
-      setMaxEnergyLimit(Number(user?.user_energy_limit));
-      setEnergyFillSpeed(Number(user?.UserEnergySpeed));
-      setCurrentEnergy(Number(user?.UserCurrentEnergy));
+  //   socket.on("socket_name_get_tap_info_page", (data: any) => {
+  //     if (data) {
+  //       setLoading(false);
+  //       setUserLevel(data?.level);
+  //       setMaxEnergyLimit(data?.energyLimit);
+  //       setCurrentEnergy(data?.currentEnergy);
+  //       setEnergyFillSpeed(data?.energyFillSpeed);
+  //     }
+  //   });
+  // }, []);
 
-      setBoostMultiScore(Number(user?.upgrade?.multitap));
-      setBoostMultilevel(Number(11)); //unknown
+  /**PATH */
+  // const path_get_userInfo =
+  //   process.env.REACT_APP_URL + "api/auth/login-register/";
+  /**PATH */
+  // const getUserInfo = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await fetch(path_get_userInfo + telegramUserId, {
+  //       method: "GET",
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //     const { user } = await response.json();
 
-      setBoostEnergyLimitScore(Number(user?.upgrade?.energyLimit));
-      setBoostEnergyLimitLevel(Number(13)); //unknown
+  //     console.log("userr", user);
 
-      setBoostRechargingScore(Number(user?.upgrade?.energySpeed));
-      setBoostRechargingLevel(Number(12)); //unknown
+  //     // socket.emit(
+  //     //   "id",
+  //     //   {
+  //     //     id: Number(telegramUserId),
+  //     //     limit: Number(user?.user_energy_limit),
+  //     //     speed: Number(user?.UserEnergySpeed),
+  //     //     energy: Number(user?.UserCurrentEnergy),
+  //     //   },
+  //     //   (data: any) => {}
+  //     // );
 
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
-  };
+  //     setUserBalance(Number(user?.user_balance));
+  //     setUserTrophy(user?.user_trophies);
+  //     setUserMultiTap(Number(user?.UserMultiTap));
 
-  useEffect(() => {
-    getUserInfo();
-  }, [telegramUserId]);
+  //     setMaxEnergyLimit(Number(user?.user_energy_limit));
+  //     setEnergyFillSpeed(Number(user?.UserEnergySpeed));
+  //     setCurrentEnergy(Number(user?.UserCurrentEnergy));
 
-  const trophies = [
-    {
-      title: "amir",
-      amount: 1000,
-    },
-    {
-      title: "ppp",
-      amount: 1000,
-    },
-  ];
+  //     setBoostMultiScore(Number(user?.upgrade?.multitap));
+  //     setBoostMultilevel(Number(11)); //unknown
+
+  //     setBoostEnergyLimitScore(Number(user?.upgrade?.energyLimit));
+  //     setBoostEnergyLimitLevel(Number(13)); //unknown
+
+  //     setBoostRechargingScore(Number(user?.upgrade?.energySpeed));
+  //     setBoostRechargingLevel(Number(12)); //unknown
+
+  //     setLoading(false);
+  //   } catch (error) {
+  //     setLoading(false);
+  //     console.log(error);
+  //   }
+  // };
+  // useEffect(() => {
+  //   getUserInfo();
+  // }, [telegramUserId]);
+
+  // const trophies = [
+  //   {
+  //     title: "amir",
+  //     amount: 1000,
+  //   },
+  //   {
+  //     title: "ppp",
+  //     amount: 1000,
+  //   },
+  // ];
 
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
@@ -238,12 +309,13 @@ const App = () => {
               path="/tap"
               element={
                 <TapPage
+                  loading={loading}
                   socket={socket}
                   userId={telegramUserId}
                   userBalance={Number(userBalance)}
                   setUserBalance={setUserBalance}
                   user_trophy={userTrophy}
-                  userMultiTap={userMultiTap}
+                  userLevel={userLevel}
                   maxEnergyLimit={maxEnergyLimit}
                   energyFillSpeed={energyFillSpeed}
                   currentEnergy={currentEnergy}
@@ -254,7 +326,21 @@ const App = () => {
             <Route
               path="/stats"
               element={
-                <StatsPage userId={telegramUserId} userBalance={userBalance} />
+                <StatsPage
+                  userId={telegramUserId}
+                  userBalance={userBalance}
+                  totalShareBalance={totalShareBalance}
+                  setTotalShareBalance={setTotalShareBalance}
+                  totalTouches={totalTouches}
+                  setTotalTouches={setTotalTouches}
+                  totalPlayers={totalPlayers}
+                  setTotalPlayers={setTotalPlayers}
+                  dailyUsers={dailyUsers}
+                  setDailyUsers={setDailyUsers}
+                  onlinePlayers={onlinePlayers}
+                  setOnlinePlayers={setOnlinePlayers}
+                  socket={socket}
+                />
               }
             />
             <Route
@@ -263,14 +349,28 @@ const App = () => {
                 <BoostPage
                   userId={Number(telegramUserId)}
                   userBalance={Number(userBalance)}
-                  multiScore={BoostMultiScore}
-                  multiLevel={BoostMultiLevel}
-                  energyLimitScore={BoostEnergyLimitScore}
-                  energyLimitLevel={BoostEnergyLimitLevel}
-                  rechargingSpeedScore={BoostRechargingScore}
-                  rechargingSpeedLevel={BoostRechargingLevel}
-                  loading={loading}
                   setUserBalance={setUserBalance}
+                  guruRemains={guruRemains}
+                  setGuruRemains={setGuruRemains}
+                  guruState={guruState}
+                  setGuruState={setGuruState}
+                  tankRemains={TankRemains}
+                  setTankRemains={setTankRemains}
+                  startTankTime={startTankTime}
+                  setStartTankTime={setStartTankTime}
+                  multiScore={boostMultiScore}
+                  setMultiScore={setBoostMultiScore}
+                  multiLevel={boostMultiLevel}
+                  setMultiLevel={setBoostMultilevel}
+                  energyLimitScore={boostEnergyLimitScore}
+                  setEnergyLimitScore={setBoostEnergyLimitScore}
+                  energyLimitLevel={boostEnergyLimitLevel}
+                  setEnergyLimitLevel={setBoostEnergyLimitLevel}
+                  rechargingLevel={boostRechargingLevel}
+                  setRechargingLevel={setBoostRechargingLevel}
+                  rechargingScore={boostRechargingScore}
+                  setRechargingScore={setBoostRechargingScore}
+                  socket={socket}
                 />
               }
             />
@@ -278,10 +378,20 @@ const App = () => {
               path="/task"
               element={
                 <TaskPage
-                  userId={telegramUserId}
+                  // userId={telegramUserId}
                   userBalance={Number(userBalance)}
                   setUserBalance={setUserBalance}
-                  loadingRoot={loading}
+                  tasks={tasks}
+                  setTasks={setTasks}
+                  unClaimedLeagues={unClaimedLeagues}
+                  setUnClaimedLeagues={setUnClaimedLeagues}
+                  claimableLeagues={claimableLeagues}
+                  setClaimableLeagues={setClaimableLeagues}
+                  unClaimedRefs={unClaimedRefs}
+                  setUnClaimedRefs={setUnClaimedRefs}
+                  claimableRefs={claimableRefs}
+                  setClaimableRefs={setClaimableRefs}
+                  socket={socket}
                 />
               }
             />
@@ -289,13 +399,13 @@ const App = () => {
               path="/trophy"
               element={
                 <TrophyPage
+                  socket={socket}
+                  user_trophy={userTrophy}
                   userBalance={Number(userBalance)}
-                  trophies={trophies}
-                  user_trophy={"aaa"}
-                  loading={loading}
                 />
               }
             />
+            <Route path="/referrals" element={<RefPage socket={socket} />} />
           </Routes>
         </SocketProvider>
       </BrowserRouter>

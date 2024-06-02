@@ -3,40 +3,40 @@ import CardLoading from "../CardLoading";
 import CardBarComp from "./CardBarComp";
 import { FindIndexByName, trophies } from "../Trophy/data";
 
-interface SingleLeagueTypes {
+interface SingleRefTypes {
   title: string;
   threshold: number;
   reward: number;
 }
 
-interface LeaguesTypes {
+interface RefTypes {
   userBalance: number;
   setUserBalance: React.Dispatch<React.SetStateAction<number>>;
   socket: any;
-  unClaimedLeagues: SingleLeagueTypes[];
-  setUnClaimedLeagues: React.Dispatch<React.SetStateAction<never[]>>;
-  claimableLeagues: SingleLeagueTypes[];
-  setClaimableLeagues: React.Dispatch<React.SetStateAction<never[]>>;
+  unClaimedRefs: SingleRefTypes[];
+  setUnClaimedRefs: React.Dispatch<React.SetStateAction<never[]>>;
+  claimableRefs: SingleRefTypes[];
+  setClaimableRefs: React.Dispatch<React.SetStateAction<never[]>>;
 }
 
-const Leagues = ({
+const RefTasks = ({
   userBalance,
   setUserBalance,
   socket,
-  unClaimedLeagues,
-  setUnClaimedLeagues,
-  claimableLeagues,
-  setClaimableLeagues,
-}: LeaguesTypes) => {
+  unClaimedRefs,
+  setUnClaimedRefs,
+  claimableRefs,
+  setClaimableRefs,
+}: RefTypes) => {
   const [loading, setLoading] = useState(false);
 
   //todo: fix useEffect and handleClaim with ali....
   useEffect(() => {
     setLoading(true);
-    socket.on("leagues", (data: any) => {
+    socket.on("refs", (data: any) => {
       if (data) {
-        setUnClaimedLeagues(data.unClaimed);
-        setClaimableLeagues(data.claimable);
+        setUnClaimedRefs(data.unClaimed);
+        setClaimableRefs(data.claimable);
         setLoading(false);
       }
     });
@@ -61,34 +61,30 @@ const Leagues = ({
         </>
       ) : (
         <>
-          {claimableLeagues.map((league, index) => {
-            const trophyIndex = FindIndexByName(league?.title);
+          {claimableRefs.map((ref, index) => {
             return (
               <CardBarComp
                 key={index}
-                img={trophies[trophyIndex]?.src}
-                title={league?.title}
-                price={Number(league?.reward)}
+                img={'./images/cat.png'}
+                title={ref?.title}
+                price={Number(ref?.reward)}
                 disabled={false}
                 present_value={Number(userBalance)}
-                final_value={Number(league?.threshold)}
-                onCLick={() => handleClaim(league?.reward)}
+                final_value={Number(ref?.threshold)}
+                onCLick={() => handleClaim(ref?.reward)}
               />
             );
           })}
-          {unClaimedLeagues.map((league, index) => {
-            const trophyIndex = FindIndexByName(league?.title);
+          {unClaimedRefs.map((ref, index) => {
             return (
               <CardBarComp
                 key={index}
-                img={trophies[trophyIndex]?.src}
-                title={league?.title}
-                price={Number(league?.reward)}
+                img={'./images/cat.png'}
+                title={ref?.title}
+                price={Number(ref?.reward)}
                 disabled={true}
-                // present_value={Number(user?.balance)}
                 present_value={Number(userBalance)}
-                final_value={Number(league?.threshold)}
-                // onCLick={handleClick}
+                final_value={Number(ref?.threshold)}
               />
             );
           })}
@@ -98,4 +94,4 @@ const Leagues = ({
   );
 };
 
-export default Leagues;
+export default RefTasks;

@@ -12,49 +12,89 @@ const path = process.env.REACT_APP_URL + "api/landing/info-stats";
 interface statsPageProps {
   userId?: any;
   userBalance?: number;
+  totalShareBalance: number;
+  setTotalShareBalance: React.Dispatch<React.SetStateAction<number>>;
+  totalTouches: number;
+  setTotalTouches: React.Dispatch<React.SetStateAction<number>>;
+  totalPlayers: number;
+  setTotalPlayers: React.Dispatch<React.SetStateAction<number>>;
+  dailyUsers: number;
+  setDailyUsers: React.Dispatch<React.SetStateAction<number>>;
+  onlinePlayers: number;
+  setOnlinePlayers: React.Dispatch<React.SetStateAction<number>>;
+  socket: any;
 }
 
-interface StatsPageProps {
-  totalTouch: number;
-  totalPlayer: number;
-  dailyDays: number;
-}
+// interface StatsProps {
+//   totalTouch: number;
+//   totalPlayer: number;
+//   dailyDays: number;
+// }
 
-const StatsPage = ({ userId, userBalance }: statsPageProps) => {
+const StatsPage = ({
+  userId,
+  userBalance,
+  totalShareBalance,
+  setTotalShareBalance,
+  totalTouches,
+  setTotalTouches,
+  totalPlayers,
+  setTotalPlayers,
+  dailyUsers,
+  setDailyUsers,
+  onlinePlayers,
+  setOnlinePlayers,
+  socket,
+}: statsPageProps) => {
   const [loading, setLoading] = useState(false);
-  const [stats, setStats] = useState<StatsPageProps | null>(null);
+  // const [stats, setStats] = useState<StatsProps | null>(null);
+
+  //todo: fix socket with ali
+  useEffect(() => {
+    setLoading(true);
+    socket.on("stats", (data: any) => {
+      if (data) {
+        setTotalShareBalance(data?.total_balance);
+        setTotalTouches(data?.total_touches);
+        setTotalPlayers(data?.total_players);
+        setDailyUsers(data?.daily_users);
+        setOnlinePlayers(data?.online_players);
+        setLoading(false);
+      }
+    });
+  }, []);
 
   /**in real decomment these */
-  const getStats = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(path, {
-        method: "GET",
-        headers: {
-          "Content-type": "application/json",
-          Accept: "application/json",
-          "info-user": userId,
-        },
-      });
-      const result = await response.json();
-      setStats(result);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log("error2", error);
-    }
-  };
+  // const getStats = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await fetch(path, {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-type": "application/json",
+  //         Accept: "application/json",
+  //         "info-user": userId,
+  //       },
+  //     });
+  //     const result = await response.json();
+  //     setStats(result);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     setLoading(false);
+  //     console.log("error2", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    getStats();
-  }, [userId]);
+  // useEffect(() => {
+  //   getStats();
+  // }, [userId]);
 
   return (
     <RootLayout bg_img={bgImg}>
       <>
         <Balance
           description={"Total Share Balance :"}
-          balance={userBalance}
+          balance={totalShareBalance}
           border={true}
           stats={true}
         />
@@ -63,10 +103,10 @@ const StatsPage = ({ userId, userBalance }: statsPageProps) => {
           <Loading />
         ) : (
           <div className="mt-16 flex flex-col gap-2">
-            <Stats description={"Total Touches:"} total={stats?.totalTouch} />
-            <Stats description={"Total Players:"} total={stats?.totalPlayer} />
-            <Stats description={"Daily Users:"} total={stats?.dailyDays} />
-            <Stats description={"Online Players:"} total={stats?.totalPlayer} />
+            <Stats description={"Total Touches:"} total={totalTouches} />
+            <Stats description={"Total Players:"} total={totalPlayers} />
+            <Stats description={"Daily Users:"} total={dailyUsers} />
+            <Stats description={"Online Players:"} total={onlinePlayers} />
           </div>
         )}
       </>

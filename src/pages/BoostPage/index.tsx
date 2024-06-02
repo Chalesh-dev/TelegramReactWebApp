@@ -17,29 +17,71 @@ import Card from "../../components/Card";
 import { useNavigate } from "react-router-dom";
 
 interface BoostPageProps {
-  loading: boolean;
   userId: number;
   userBalance: number;
-  multiScore: number;
-  multiLevel: number;
-  energyLimitScore: number;
-  energyLimitLevel: number;
-  rechargingSpeedScore: number;
-  rechargingSpeedLevel: number;
   setUserBalance: React.Dispatch<React.SetStateAction<number>>;
+
+  guruRemains: number;
+  setGuruRemains: React.Dispatch<React.SetStateAction<number>>;
+
+  guruState: boolean;
+  setGuruState: React.Dispatch<React.SetStateAction<boolean>>;
+
+  tankRemains: number;
+  setTankRemains: React.Dispatch<React.SetStateAction<number>>;
+
+  startTankTime: string;
+  setStartTankTime: React.Dispatch<React.SetStateAction<string>>;
+
+  multiScore: number;
+  setMultiScore: React.Dispatch<React.SetStateAction<number>>;
+  multiLevel: number;
+  setMultiLevel: React.Dispatch<React.SetStateAction<number>>;
+
+  energyLimitScore: number;
+  setEnergyLimitScore: React.Dispatch<React.SetStateAction<number>>;
+  energyLimitLevel: number;
+  setEnergyLimitLevel: React.Dispatch<React.SetStateAction<number>>;
+
+  rechargingLevel: number;
+  setRechargingLevel: React.Dispatch<React.SetStateAction<number>>;
+  rechargingScore: number;
+  setRechargingScore: React.Dispatch<React.SetStateAction<number>>;
+
+  socket: any;
 }
 
 const BoostPage = ({
   userId,
   userBalance,
-  multiScore,
-  multiLevel,
-  energyLimitScore,
-  energyLimitLevel,
-  rechargingSpeedScore,
-  rechargingSpeedLevel,
-  loading,
   setUserBalance,
+
+  guruRemains,
+  setGuruRemains,
+  guruState,
+  setGuruState,
+
+  tankRemains,
+  setTankRemains,
+  startTankTime,
+  setStartTankTime,
+
+  multiScore,
+  setMultiScore,
+  multiLevel,
+  setMultiLevel,
+
+  energyLimitScore,
+  setEnergyLimitScore,
+  energyLimitLevel,
+  setEnergyLimitLevel,
+
+  rechargingLevel,
+  setRechargingLevel,
+  rechargingScore,
+  setRechargingScore,
+
+  socket,
 }: BoostPageProps) => {
   /**open Modal */
   const [openMulti, setOpenMulti] = useState(false);
@@ -48,8 +90,36 @@ const BoostPage = ({
   const [openBot, setOpenBot] = useState(false);
   const [openGuru, setOpenGuru] = useState(false);
   const [openFullTank, setOpenFullTank] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  //todo: check sockets with ali
+  socket.on("guru", (data: any) => {
+    setGuruRemains(data?.remain);
+    // setStartGuruTime(data?.guru_time);
+  });
+
+  socket.on("tank", (data: any) => {
+    setTankRemains(data?.remain);
+    setStartTankTime(data?.tank_time);
+  });
+
+  socket.on("multitap", (data: any) => {
+    setMultiLevel(data?.level);
+    setMultiScore(data?.score);
+  });
+
+  socket.on("energy_limit", (data: any) => {
+    setEnergyLimitLevel(data?.level);
+    setEnergyLimitScore(data?.score);
+  });
+
+  socket.on("recharging_speed", (data: any) => {
+    setRechargingLevel(data?.level);
+    setRechargingScore(data?.score);
+  });
+
+  //todo: should i emit socket in functions bellow.
   const handleMulti = () => {
     setUserBalance((prevState) => prevState - multiScore);
     setOpenMulti(false);
@@ -59,18 +129,18 @@ const BoostPage = ({
     setOpenEnergy(false);
   };
   const handleRecharging = () => {
-    setUserBalance((prevState) => prevState - rechargingSpeedScore);
+    setUserBalance((prevState) => prevState - rechargingScore);
     setOpenRecharging(false);
   };
 
   const handleActiveGuru = () => {
     setOpenGuru(false);
-    navigate('/tap');
+    navigate("/tap");
   };
 
   const handleActiveTank = () => {
     setOpenFullTank(false);
-    navigate('/tap');
+    navigate("/tap");
   };
 
   return (
@@ -135,8 +205,8 @@ const BoostPage = ({
             <Card
               icon={<FlashIcon color={"yellow"} size={28} />}
               name={"Recharging Speed"}
-              coin_num={rechargingSpeedScore}
-              level={rechargingSpeedLevel}
+              coin_num={rechargingScore}
+              level={rechargingLevel}
               onClick={() => setOpenRecharging(true)}
             />
             <Card
@@ -188,10 +258,10 @@ const BoostPage = ({
           icon={<FlashIcon color={"yellow"} size={58} />}
           boostTitle={"Recharging Speed"}
           boostDescription={"Increase amount of TAP you can earn per one tap."}
-          boostTapInfo={`+${rechargingSpeedLevel} per tap for each level.`}
-          boostTokenRequired={rechargingSpeedScore}
-          boostLevel={rechargingSpeedLevel}
-          disabled={Number(userBalance) < Number(rechargingSpeedScore)}
+          boostTapInfo={`+${rechargingLevel} per tap for each level.`}
+          boostTokenRequired={rechargingScore}
+          boostLevel={rechargingLevel}
+          disabled={Number(userBalance) < Number(rechargingScore)}
           onClick={handleRecharging}
         ></Modal>
       )}

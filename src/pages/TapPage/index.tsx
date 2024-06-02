@@ -12,11 +12,12 @@ interface TapPageProps {
   user?: any;
   user_balance?: number;
   user_trophy?: string;
-  userMultiTap?: number;
+  userLevel?: number;
   maxEnergyLimit?: number;
   userBalance?: number;
   currentEnergy?: number;
   energyFillSpeed?: number;
+  loading?: boolean;
   setUserBalance: React.Dispatch<React.SetStateAction<number>>;
   setCurrentEnergy: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -27,11 +28,12 @@ const TapPage: React.FC<TapPageProps> = ({
   userBalance,
   setUserBalance,
   user_trophy,
-  userMultiTap,
+  userLevel,
   maxEnergyLimit,
   energyFillSpeed,
   currentEnergy,
   setCurrentEnergy,
+  loading,
 }) => {
   // useEffect(() => {
   //   socket.on("top", (data: any) => {
@@ -60,51 +62,41 @@ const TapPage: React.FC<TapPageProps> = ({
   const [fireMode, setFireMode] = useState(1);
 
   const handleCoinClick = () => {
-    // socket.emit(
-    //   "tap",
-    //   {
-    //     // id: userId,
-    //     level: Number(userMultiTap).toString(),
-    //   },
-    //   (data: any) => {}
-    // );
+    socket.emit(
+      "tap",
+      {
+        level: Number(userLevel).toString(),
+      },
+      (data: any) => {}
+    );
   };
 
   return (
     <>
       <RootLayout bg_img={bgImg}>
-        <div className="flex flex-col items-center justify-around w-full h-full">
-          {/* <p className="text-red-500">{userId}</p>
-            <p className="text-white">amount:{user?.user?.t_balance[0]?.amount}</p>
-            <p>status:{user?.status}</p> */}
-
-          <Balance balance={userBalance} user_trophy={user_trophy} cup={true} />
-
-          <CoinIcon
-            balance={userBalance}
-            increment={userMultiTap}
-            onCoinClick={handleCoinClick}
-            currentSpark={currentEnergy}
-          />
-
-          <ScoreBar
-            maxLimitSpark={maxEnergyLimit}
-            incrementSparkNumber={userMultiTap}
-            currentSpark={currentEnergy}
-            // setCurrentSpark={setCurrentSpark}
-          />
-
-          {/* {loadingRecharging ? (
-          <ProgressBarLoading />
-        ) : ( */}
-          {/* <ScoreBar
-              maxLimitSpark={energyUnit?.size}
-              incrementSparkNumber={Number(increaseSpeed?.unit)}
-              currentSpark={currentSpark}
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className="flex flex-col items-center justify-around w-full h-full">
+            <Balance
+              balance={userBalance}
+              user_trophy={user_trophy}
+              cup={true}
+            />
+            <CoinIcon
+              balance={userBalance}
+              increment={userLevel}
+              onCoinClick={handleCoinClick}
+              currentSpark={currentEnergy}
+            />
+            <ScoreBar
+              maxLimitSpark={maxEnergyLimit}
+              incrementSparkNumber={userLevel}
+              currentSpark={currentEnergy}
               // setCurrentSpark={setCurrentSpark}
-            /> */}
-          {/* )} */}
-        </div>
+            />
+          </div>
+        )}
       </RootLayout>
     </>
   );
