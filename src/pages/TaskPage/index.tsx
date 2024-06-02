@@ -46,9 +46,6 @@ const TaskPage = ({
 
   useEffect(() => {
     setSpecials(true);
-  }, []);
-
-  useEffect(() => {
     setLoading(true);
     socket.on("tasks", (data: any) => {
       if (data) {

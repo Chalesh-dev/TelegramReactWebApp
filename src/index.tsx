@@ -1,6 +1,7 @@
 import React, {
   DispatchWithoutAction,
   FC,
+  SetStateAction,
   useEffect,
   useRef,
   useState,
@@ -22,7 +23,7 @@ import useBetaVersion from "./useBetaVersion";
 
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import TapPage from "./pages/TapPage";
-import { io } from "socket.io-client";
+import { Socket, io } from "socket.io-client";
 import { SocketProvider } from "./context/SocketContext";
 import StatsPage from "./pages/StatsPage";
 import BoostPage from "./pages/BoostPage";
@@ -111,27 +112,13 @@ const root = ReactDOM.createRoot(
 // const socket = "frrfr";
 
 const App = () => {
-  const [socket, setSocket] = useState(null);
-  useEffect(() => {
-    const socket = io("ws://192.168.88.168:8080");
-
-    //@ts-ignore
-    setSocket(socket);
-    socket.on("connect", () => {
-      console.log("eee");
-      socket.emit("join", "C++");
-    });
-
-    // socket.emit("user_login", 12, (data: any) => {
-    //   console.log(data);
-    // });
-  }, []);
-
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
   // const [initDataUnsafe] = useInitData();
   // const telegramUserId = initDataUnsafe?.user?.id;
   const telegramUserId = 123456;
 
+  /*********************socket *************************/
+  const [socket, setSocket] = useState<Socket>();
   /*********************Initial states*****************/
   const [init, setInit] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -185,6 +172,32 @@ const App = () => {
   /*********************sockets *************************/
 
   useEffect(() => {
+    const socket = io("ws://192.168.88.168:8080");
+
+    setSocket(socket);
+    socket.on("connect", () => {
+      console.log("eee");
+      socket.emit("join", "C++");
+    });
+
+    // socket.emit("user_login", 12, (data: any) => {
+    //   console.log(data);
+    // });
+  }, []);
+
+  useEffect(() => {
+    socket.on("energy", (data: any) => {
+      if (data) {
+        setInit(true);
+      }
+    });
+
+    socket.emit("user_login", 12, (data: any) => {
+      console.log(data);
+    });
+  }, []);
+
+  useEffect(() => {
     setInterval(() => {
       if (currentEnergy < maxEnergyLimit) {
         setCurrentEnergy((prevState) => {
@@ -198,39 +211,27 @@ const App = () => {
     }, 1000);
   }, [init]);
 
-  // useEffect(() => {
-  //   socket.on("energy", (data: any) => {
-  //     if (data) {
-  //       setInit(true);
-  //     }
-  //   });
-
-  //   socket.emit("user_login", 12, (data: any) => {
-  //     console.log(data);
-  //   });
-  // }, []);
-
   //todo: am i put these sockets in useEffect or not? // fix the socket names
-  // useEffect(() => {
-  //   setLoading(true);
-  //   socket.on("socket_name_get_user_balance", (data: any) => {
-  //     setUserBalance(data?.userBalance);
-  //   });
+  useEffect(() => {
+    setLoading(true);
+    socket.on("socket_name_get_user_balance", (data: any) => {
+      setUserBalance(data?.userBalance);
+    });
 
-  //   socket.on("socket_name_get_user_trophy", (data: any) => {
-  //     setUserTrophy(data?.trophy);
-  //   });
+    socket.on("socket_name_get_user_trophy", (data: any) => {
+      setUserTrophy(data?.trophy);
+    });
 
-  //   socket.on("socket_name_get_tap_info_page", (data: any) => {
-  //     if (data) {
-  //       setLoading(false);
-  //       setUserLevel(data?.level);
-  //       setMaxEnergyLimit(data?.energyLimit);
-  //       setCurrentEnergy(data?.currentEnergy);
-  //       setEnergyFillSpeed(data?.energyFillSpeed);
-  //     }
-  //   });
-  // }, []);
+    socket.on("socket_name_get_tap_info_page", (data: any) => {
+      if (data) {
+        setLoading(false);
+        setUserLevel(data?.level);
+        setMaxEnergyLimit(data?.energyLimit);
+        setCurrentEnergy(data?.currentEnergy);
+        setEnergyFillSpeed(data?.energyFillSpeed);
+      }
+    });
+  }, []);
 
   /**PATH */
   // const path_get_userInfo =

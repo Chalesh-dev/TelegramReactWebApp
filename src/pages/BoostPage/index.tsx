@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import bgImg from "../../assets/bg_images/bg-6.png";
 import Balance from "../../components/Balance/Balance";
 import {
@@ -15,6 +15,7 @@ import DailyBooster from "../../components/DailyBooster";
 import CardLoading from "../../components/CardLoading";
 import Card from "../../components/Card";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../components/LoadingComp/Loading";
 
 interface BoostPageProps {
   userId: number;
@@ -90,34 +91,59 @@ const BoostPage = ({
   const [openBot, setOpenBot] = useState(false);
   const [openGuru, setOpenGuru] = useState(false);
   const [openFullTank, setOpenFullTank] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loadingMulti, setLoadingMulti] = useState(false);
+  const [loadingEnergy, setLoadingEnergy] = useState(false);
+  const [loadingRecharging, setLoadingRecharging] = useState(false);
+  const [loadingBot, setLoadingBot] = useState(false);
   const navigate = useNavigate();
 
   //todo: check sockets with ali
-  socket.on("guru", (data: any) => {
-    setGuruRemains(data?.remain);
-    // setStartGuruTime(data?.guru_time);
-  });
+  useEffect(() => {
+    setLoadingMulti(true);
+    setLoadingEnergy(true);
+    setLoadingRecharging(true);
+    setLoadingBot(true);
+    socket.on("guru", (data: any) => {
+      setGuruRemains(data?.remain);
+      // setStartGuruTime(data?.guru_time);
+    });
 
-  socket.on("tank", (data: any) => {
-    setTankRemains(data?.remain);
-    setStartTankTime(data?.tank_time);
-  });
+    socket.on("tank", (data: any) => {
+      setTankRemains(data?.remain);
+      setStartTankTime(data?.tank_time);
+    });
 
-  socket.on("multitap", (data: any) => {
-    setMultiLevel(data?.level);
-    setMultiScore(data?.score);
-  });
+    socket.on("multitap", (data: any) => {
+      if (data) {
+        setMultiLevel(data?.level);
+        setMultiScore(data?.score);
+        setLoadingMulti(false);
+      }
+    });
 
-  socket.on("energy_limit", (data: any) => {
-    setEnergyLimitLevel(data?.level);
-    setEnergyLimitScore(data?.score);
-  });
+    socket.on("energy_limit", (data: any) => {
+      if (data) {
+        setEnergyLimitLevel(data?.level);
+        setEnergyLimitScore(data?.score);
+        setLoadingEnergy(false);
+      }
+    });
 
-  socket.on("recharging_speed", (data: any) => {
-    setRechargingLevel(data?.level);
-    setRechargingScore(data?.score);
-  });
+    socket.on("recharging_speed", (data: any) => {
+      if (data) {
+        setRechargingLevel(data?.level);
+        setRechargingScore(data?.score);
+        setLoadingRecharging(false);
+      }
+    });
+
+    socket.on("Bot", (data: any) => {
+      if (data) {
+        //todo:have a check to this func
+        setLoadingBot(false);
+      }
+    });
+  }, []);
 
   //todo: should i emit socket in functions bellow.
   const handleMulti = () => {
@@ -179,44 +205,49 @@ const BoostPage = ({
 
       <h1 className="text-white text-2xl my-2">Boosters:</h1>
       <div className="container--task">
-        {loading ? (
-          <>
-            <CardLoading />
-            <CardLoading />
-            <CardLoading />
-            <CardLoading />
-          </>
+        {loadingMulti ? (
+          <Loading />
         ) : (
-          <>
-            <Card
-              icon={<Hand color={"yellow"} size={28} />}
-              name={"Multitap"}
-              coin_num={multiScore}
-              level={multiLevel}
-              onClick={() => setOpenMulti(true)}
-            />
-            <Card
-              icon={<BatteryIcon color={"yellow"} size={28} />}
-              name={"Energy Limit"}
-              coin_num={energyLimitScore}
-              level={energyLimitLevel}
-              onClick={() => setOpenEnergy(true)}
-            />
-            <Card
-              icon={<FlashIcon color={"yellow"} size={28} />}
-              name={"Recharging Speed"}
-              coin_num={rechargingScore}
-              level={rechargingLevel}
-              onClick={() => setOpenRecharging(true)}
-            />
-            <Card
-              icon={<Robot color={"yellow"} size={28} />}
-              name={"Tap Bot"}
-              coin_num={"1245"}
-              level={"18"}
-              onClick={() => setOpenBot(true)}
-            />
-          </>
+          <Card
+            icon={<Hand color={"yellow"} size={28} />}
+            name={"Multitap"}
+            coin_num={multiScore}
+            level={multiLevel}
+            onClick={() => setOpenMulti(true)}
+          />
+        )}
+        {loadingEnergy ? (
+          <Loading />
+        ) : (
+          <Card
+            icon={<BatteryIcon color={"yellow"} size={28} />}
+            name={"Energy Limit"}
+            coin_num={energyLimitScore}
+            level={energyLimitLevel}
+            onClick={() => setOpenEnergy(true)}
+          />
+        )}
+        {loadingRecharging ? (
+          <Loading />
+        ) : (
+          <Card
+            icon={<FlashIcon color={"yellow"} size={28} />}
+            name={"Recharging Speed"}
+            coin_num={rechargingScore}
+            level={rechargingLevel}
+            onClick={() => setOpenRecharging(true)}
+          />
+        )}
+        {loadingBot ? (
+          <Loading />
+        ) : (
+          <Card
+            icon={<Robot color={"yellow"} size={28} />}
+            name={"Tap Bot"}
+            coin_num={"1245"}
+            level={"18"}
+            onClick={() => setOpenBot(true)}
+          />
         )}
       </div>
 

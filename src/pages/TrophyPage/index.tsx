@@ -1,6 +1,7 @@
 import bgImg from "../../assets/bg_images/bg-4.png";
 import TrophySlider from "../../components/Trophy/TrophySlider";
 import RootLayout from "../../components/RootLayout/RootLayout";
+import { useEffect } from "react";
 
 interface TrophyPageProps {
   socket: any;
