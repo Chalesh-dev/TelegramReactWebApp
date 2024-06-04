@@ -1,6 +1,7 @@
 import React, {
   DispatchWithoutAction,
   FC,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -29,6 +30,8 @@ import BoostPage from "./pages/BoostPage";
 import TaskPage from "./pages/TaskPage";
 import TrophyPage from "./pages/TrophyPage";
 import RefPage from "./pages/RefPage";
+
+import useWebSocket, { ReadyState } from "react-use-websocket";
 
 // const DemoApp: FC<{
 //   onChangeTransition: DispatchWithoutAction;
@@ -111,21 +114,21 @@ const root = ReactDOM.createRoot(
 // const socket = "frrfr";
 
 const App = () => {
-  const [socket, setSocket] = useState(null);
-  useEffect(() => {
-    const socket = io("ws://192.168.88.168:8080");
+  //   const [socket, setSocket] = useState(null);
+  //   useEffect(() => {
+  //     const socket = io("ws://192.168.88.168:8080");
 
-    //@ts-ignore
-    setSocket(socket);
-    socket.on("connect", () => {
-      console.log("eee");
-      socket.emit("join", "C++");
-    });
+  // //@ts-ignore
+  // setSocket(socket);
+  // socket.on("connect", () => {
+  //   console.log("eee");
+  //   socket.emit("join", "C++");
+  // });
 
-    // socket.emit("user_login", 12, (data: any) => {
-    //   console.log(data);
-    // });
-  }, []);
+  // socket.emit("user_login", 12, (data: any) => {
+  //   console.log(data);
+  // });
+  // }, []);
 
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
   // const [initDataUnsafe] = useInitData();
@@ -183,20 +186,67 @@ const App = () => {
   /*********************End ******************************/
 
   /*********************sockets *************************/
+  const socket = 123456789;
+
+  const WS_URL = "ws://192.168.88.168:8080/" + telegramUserId;
+  //Public API that will echo messages sent to it back to the client
+  const [socketUrl, setSocketUrl] = useState(WS_URL);
+  const [messageHistory, setMessageHistory] = useState<MessageEvent<any>[]>([]);
+
+  const [lastMessage, setLastMessage] = useState(null);
+  const [jsonMessage, setJsonMessage] = useState(null);
+
+  const { sendMessage, lastJsonMessage } = useWebSocket(socketUrl, {
+    onOpen: () => console.log('Connected to WebSocket'),
+    onMessage: (message) => {
+      console.log(`Received raw message: ${message.data}`);
+      setLastMessage(message.data);
+
+      try {
+        const parsedData = JSON.parse(message.data);
+        setJsonMessage(parsedData);
+        console.log('Converted JSON dataaaa:', parsedData.result.status);
+      } catch (error) {
+        console.error('Failed to decode JSON:', error);
+      }
+    },
+    onError: (event) => console.error('WebSocket error:', event),
+    // todo: onclose
+    onClose: () => console.log('WebSocket connection closed'),
+    shouldReconnect: (closeEvent) => true,  // Automatically reconnect on disconnection
+  });
 
   useEffect(() => {
-    setInterval(() => {
-      if (currentEnergy < maxEnergyLimit) {
-        setCurrentEnergy((prevState) => {
-          if (prevState + Number(energyFillSpeed) < maxEnergyLimit) {
-            return prevState + Number(energyFillSpeed);
-          } else {
-            return maxEnergyLimit;
-          }
-        });
-      }
-    }, 1000);
-  }, [init]);
+    if (lastJsonMessage !== null) {
+      // setMessageHistory((prev) => prev.concat(lastJsonMessage));
+    }
+    console.log("lastMessage1121", lastJsonMessage);
+    // let data12 = lastMessage?.data
+    // data12 = JSON.parse(data12)
+    // console.log(data12)
+    // console.log('lastMessage',JSON.parse(lastMessage?.data));
+  }, [lastJsonMessage]);
+
+  const handleClickSendMessage = useCallback(() => sendMessage(JSON.stringify({topic:"upgrade",power:"energy limit"})), []);
+
+  // const handleClickChangeSocketUrl = useCallback(
+  //   () => setSocketUrl("wss://demos.kaazing.com/echo"),
+  //   []
+  // );
+
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     if (currentEnergy < maxEnergyLimit) {
+  //       setCurrentEnergy((prevState) => {
+  //         if (prevState + Number(energyFillSpeed) < maxEnergyLimit) {
+  //           return prevState + Number(energyFillSpeed);
+  //         } else {
+  //           return maxEnergyLimit;
+  //         }
+  //       });
+  //     }
+  //   }, 1000);
+  // }, [init]);
 
   // useEffect(() => {
   //   socket.on("energy", (data: any) => {
@@ -301,8 +351,11 @@ const App = () => {
 
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
-      <BrowserRouter>
-        <SocketProvider socket={socket}>
+      <button onClick={handleClickSendMessage}>
+        Click Me to change Socket Url
+      </button>
+      {/* <BrowserRouter> */}
+      {/* <SocketProvider socket={socket}>
           <Routes>
             <Route path="/" element={<Navigate to="/tap" replace />} />
             <Route
@@ -407,8 +460,8 @@ const App = () => {
             />
             <Route path="/referrals" element={<RefPage socket={socket} />} />
           </Routes>
-        </SocketProvider>
-      </BrowserRouter>
+        </SocketProvider> */}
+      {/* </BrowserRouter> */}
     </WebAppProvider>
   );
 };
