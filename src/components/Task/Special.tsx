@@ -73,16 +73,16 @@ const Special = ({
     []
   );
 
-  const handleTaskCheck = () => {
+  const handleTaskCheck = useCallback((taskId: string | undefined) => {
     //todo: when click on check button a socket should be emmited which check is really this person do the task and then "Finish Mission" button activated
     //todo: i am waiting till socket answered
-  };
+  }, []);
 
-  const handleSubmitTask = (amount: number | undefined) => {
+  const handleSubmitTask = useCallback((amount: number | undefined) => {
     //todo: when successfully socket answered i added balance
     // setUserBalance((prevState) => prevState + Number(amount));
     setOpenModal(false);
-  };
+  }, []);
 
   return (
     <>
@@ -120,7 +120,7 @@ const Special = ({
             {check ? (
               <CustomBtn
                 title={"Check"}
-                onClick={handleTaskCheck}
+                onClick={() => handleTaskCheck(specialInfo?.uuid)}
                 className={"text-base"}
               />
             ) : (
