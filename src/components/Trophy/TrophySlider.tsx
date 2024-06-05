@@ -1,7 +1,7 @@
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import { FindIndexByName, trophies } from "./data";
+import { FindIndexByName, trophies } from "../config/trophiesList";
 
 // Import Swiper styles
 import "swiper/css";

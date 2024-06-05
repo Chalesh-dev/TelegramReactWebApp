@@ -143,13 +143,16 @@ const App = () => {
   const [userBalance, setUserBalance] = useState<number>(0);
 
   /********************user trophy ******************/
-  const [userTrophy, setUserTrophy] = useState<string>("");
+  const [userTrophy, setUserTrophy] = useState<number>(0);
 
   /********************Tap page *********************/
   const [userLevel, setUserLevel] = useState<number>(0);
   const [maxEnergyLimit, setMaxEnergyLimit] = useState<number>(0);
+  const [guru, setGuru] = useState<boolean>(false);
+  const [autoBot, setAutoBot] = useState<boolean>(false);
   const [energyFillSpeed, setEnergyFillSpeed] = useState<number>(0);
   const [currentEnergy, setCurrentEnergy] = useState<number>(0);
+  const [autoEarning, setAutoEarning] = useState<number>(0);
 
   //******************boost page *******************/
   const [boostMultiScore, setBoostMultiScore] = useState<number>(0);
@@ -190,44 +193,62 @@ const App = () => {
 
   const WS_URL = "ws://192.168.88.168:8080/" + telegramUserId;
   //Public API that will echo messages sent to it back to the client
-  const [socketUrl, setSocketUrl] = useState(WS_URL);
-  const [messageHistory, setMessageHistory] = useState<MessageEvent<any>[]>([]);
-
-  const [lastMessage, setLastMessage] = useState(null);
-  const [jsonMessage, setJsonMessage] = useState(null);
-
-  const { sendMessage, lastJsonMessage } = useWebSocket(socketUrl, {
-    onOpen: () => console.log('Connected to WebSocket'),
+  const socketUrlRef = useRef(WS_URL);
+  const { sendMessage, lastJsonMessage } = useWebSocket(socketUrlRef.current, {
+    onOpen: () => console.log("Connected to WebSocket"),
     onMessage: (message) => {
-      console.log(`Received raw message: ${message.data}`);
-      setLastMessage(message.data);
-
       try {
         const parsedData = JSON.parse(message.data);
-        setJsonMessage(parsedData);
-        console.log('Converted JSON dataaaa:', parsedData.result.status);
+        const data = parsedData?.result;
+        const topic = parsedData?.topic;
+        const status = parsedData?.status;
+        if (status) {
+          setLoading(true);
+          if (topic === "balance") {
+            setUserBalance(Number(data?.balance));
+            setUserLevel(Number(data?.multi_tap));
+            setGuru(data?.guru);
+            setUserTrophy(data?.league);
+            setAutoBot(data?.auto_bot);
+            setLoading(false);
+          }
+          if (topic === "energy") {
+            setCurrentEnergy(Number(data?.current_energy));
+            setMaxEnergyLimit(Number(data?.max_energy));
+            setEnergyFillSpeed(Number(data?.energy_speed));
+            setLoading(false);
+          }
+          if (topic === "auto_bot_earning") {
+            setAutoEarning(Number(data?.earning));
+            setLoading(false);
+          }
+        }
       } catch (error) {
-        console.error('Failed to decode JSON:', error);
+        console.error("Failed to decode JSON:", error);
       }
     },
-    onError: (event) => console.error('WebSocket error:', event),
+    onError: (event) => console.error("WebSocket error:", event),
     // todo: onclose
-    onClose: () => console.log('WebSocket connection closed'),
-    shouldReconnect: (closeEvent) => true,  // Automatically reconnect on disconnection
+    onClose: () => console.log("WebSocket connection closed"),
+    shouldReconnect: (closeEvent) => true, // Automatically reconnect on disconnection
   });
 
-  useEffect(() => {
-    if (lastJsonMessage !== null) {
-      // setMessageHistory((prev) => prev.concat(lastJsonMessage));
-    }
-    console.log("lastMessage1121", lastJsonMessage);
-    // let data12 = lastMessage?.data
-    // data12 = JSON.parse(data12)
-    // console.log(data12)
-    // console.log('lastMessage',JSON.parse(lastMessage?.data));
-  }, [lastJsonMessage]);
+  // useEffect(() => {
+  //   if (lastJsonMessage !== null) {
+  // setMessageHistory((prev) => prev.concat(lastJsonMessage));
+  // }
+  // console.log("lastMessage1121", lastJsonMessage);
+  // let data12 = lastMessage?.data
+  // data12 = JSON.parse(data12)
+  // console.log(data12)
+  // console.log('lastMessage',JSON.parse(lastMessage?.data));
+  // }, [lastJsonMessage]);
 
-  const handleClickSendMessage = useCallback(() => sendMessage(JSON.stringify({topic:"upgrade",power:"energy limit"})), []);
+  // const handleClickSendMessage = useCallback(
+  //   () =>
+  //     sendMessage(JSON.stringify({ topic: "upgrade", power: "energy limit" })),
+  //   []
+  // );
 
   // const handleClickChangeSocketUrl = useCallback(
   //   () => setSocketUrl("wss://demos.kaazing.com/echo"),
@@ -349,34 +370,49 @@ const App = () => {
   //   },
   // ];
 
+  useEffect(() => {
+    setInterval(() => {
+      if (currentEnergy < maxEnergyLimit) {
+        setCurrentEnergy((prevState) => {
+          if (prevState + Number(energyFillSpeed) < maxEnergyLimit) {
+            return prevState + Number(energyFillSpeed);
+          } else {
+            return maxEnergyLimit;
+          }
+        });
+      }
+    }, 1000);
+  }, []);
+
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
-      <button onClick={handleClickSendMessage}>
+      {/* <button onClick={handleClickSendMessage}>
         Click Me to change Socket Url
-      </button>
-      {/* <BrowserRouter> */}
-      {/* <SocketProvider socket={socket}>
-          <Routes>
-            <Route path="/" element={<Navigate to="/tap" replace />} />
-            <Route
-              path="/tap"
-              element={
-                <TapPage
-                  loading={loading}
-                  socket={socket}
-                  userId={telegramUserId}
-                  userBalance={Number(userBalance)}
-                  setUserBalance={setUserBalance}
-                  user_trophy={userTrophy}
-                  userLevel={userLevel}
-                  maxEnergyLimit={maxEnergyLimit}
-                  energyFillSpeed={energyFillSpeed}
-                  currentEnergy={currentEnergy}
-                  setCurrentEnergy={setCurrentEnergy}
-                />
-              }
-            />
-            <Route
+      </button> */}
+      <BrowserRouter>
+        {/* <SocketProvider socket={socket}> */}
+        <Routes>
+          <Route path="/" element={<Navigate to="/tap" replace />} />
+          <Route
+            path="/tap"
+            element={
+              <TapPage
+                loading={loading}
+                sendMessage={sendMessage}
+                // userId={telegramUserId}
+                userBalance={userBalance}
+                guru={guru}
+                autoBot={autoBot}
+                user_trophy={userTrophy}
+                userLevel={userLevel}
+                maxEnergyLimit={maxEnergyLimit}
+                energyFillSpeed={energyFillSpeed}
+                currentEnergy={currentEnergy}
+                autoEarning={autoEarning}
+              />
+            }
+          />
+          {/* <Route
               path="/stats"
               element={
                 <StatsPage
@@ -395,8 +431,8 @@ const App = () => {
                   socket={socket}
                 />
               }
-            />
-            <Route
+            /> */}
+          {/* <Route
               path="/boost"
               element={
                 <BoostPage
@@ -426,8 +462,8 @@ const App = () => {
                   socket={socket}
                 />
               }
-            />
-            <Route
+            /> */}
+          {/* <Route
               path="/task"
               element={
                 <TaskPage
@@ -447,8 +483,8 @@ const App = () => {
                   socket={socket}
                 />
               }
-            />
-            <Route
+            /> */}
+          {/* <Route
               path="/trophy"
               element={
                 <TrophyPage
@@ -457,11 +493,11 @@ const App = () => {
                   userBalance={Number(userBalance)}
                 />
               }
-            />
-            <Route path="/referrals" element={<RefPage socket={socket} />} />
-          </Routes>
-        </SocketProvider> */}
-      {/* </BrowserRouter> */}
+            /> */}
+          {/* <Route path="/referrals" element={<RefPage socket={socket} />} /> */}
+        </Routes>
+        {/* </SocketProvider> */}
+      </BrowserRouter>
     </WebAppProvider>
   );
 };

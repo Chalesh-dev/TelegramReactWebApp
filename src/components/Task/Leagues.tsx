@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import CardLoading from "../CardLoading";
 import CardBarComp from "./CardBarComp";
-import { FindIndexByName, trophies } from "../Trophy/data";
+import { FindIndexByName, trophies } from "../config/trophiesList";
 
 interface SingleLeagueTypes {
   title: string;

@@ -11,7 +11,7 @@ interface BalanceType {
   referral_status?: boolean;
   stats?: boolean;
   balance?: number;
-  user_trophy?: string
+  user_trophy: string
 }
 
 const Balance = ({

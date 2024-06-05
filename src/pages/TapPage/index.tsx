@@ -1,39 +1,38 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import bgImg from "../../assets/bg_images/bg-2.png";
 import RootLayout from "../../components/RootLayout/RootLayout";
 import Loading from "../../components/LoadingComp/Loading";
 import Balance from "../../components/Balance/Balance";
 import CoinIcon from "../../components/Tap/CoinIcon";
 import ScoreBar from "../../components/Tap/ScoreBar";
+import { trophies } from "../../components/config/trophiesList";
 
 interface TapPageProps {
-  socket: any;
-  userId: any;
-  user?: any;
-  user_balance?: number;
-  user_trophy?: string;
+  sendMessage: any;
+  userBalance?: number;
+  user_trophy: number;
   userLevel?: number;
   maxEnergyLimit?: number;
-  userBalance?: number;
   currentEnergy?: number;
   energyFillSpeed?: number;
   loading?: boolean;
-  setUserBalance: React.Dispatch<React.SetStateAction<number>>;
-  setCurrentEnergy: React.Dispatch<React.SetStateAction<number>>;
+  guru?: boolean;
+  autoBot?: boolean;
+  autoEarning?: number;
 }
 
 const TapPage: React.FC<TapPageProps> = ({
-  socket,
-  userId,
+  loading,
+  sendMessage,
+  guru,
+  autoBot,
+  autoEarning,
   userBalance,
-  setUserBalance,
   user_trophy,
   userLevel,
   maxEnergyLimit,
   energyFillSpeed,
   currentEnergy,
-  setCurrentEnergy,
-  loading,
 }) => {
   // useEffect(() => {
   //   socket.on("top", (data: any) => {
@@ -59,17 +58,21 @@ const TapPage: React.FC<TapPageProps> = ({
   //     (data: any) => {}
   //   );
   // }, [maxEnergyLimit, energyFillSpeed]);
-  const [fireMode, setFireMode] = useState(1);
+  // const [fireMode, setFireMode] = useState(1);
 
-  const handleCoinClick = () => {
-    socket.emit(
-      "tap",
-      {
-        level: Number(userLevel).toString(),
-      },
-      (data: any) => {}
-    );
-  };
+  // const handleCoinClick = () => {
+  //   socket.emit(
+  //     "tap",
+  //     {
+  //       level: Number(userLevel).toString(),
+  //     },
+  //     (data: any) => {}
+  //   );
+  // };
+
+  const handleCoinClick = useCallback(() => {
+    sendMessage(JSON.stringify({ topic: "upgrade" }));
+  }, []);
 
   return (
     <>
@@ -80,7 +83,7 @@ const TapPage: React.FC<TapPageProps> = ({
           <div className="flex flex-col items-center justify-around w-full h-full">
             <Balance
               balance={userBalance}
-              user_trophy={user_trophy}
+              user_trophy={trophies[user_trophy]?.name}
               cup={true}
             />
             <CoinIcon

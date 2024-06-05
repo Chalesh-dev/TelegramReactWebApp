@@ -13,27 +13,27 @@ export const trophies = [
   {
     name: "Wood",
     src: img1,
-    amount: 5000,
+    amount: 500,
   },
   {
     name: "Bronze",
     src: img2,
-    amount: 10000,
+    amount: 1000,
   },
   {
     name: "Silver",
     src: img3,
-    amount: 15000,
+    amount: 5000,
   },
   {
     name: "Gold",
     src: img4,
-    amount: 25000,
+    amount: 10000,
   },
   {
     name: "Platinum",
     src: img5,
-    amount: 35000,
+    amount: 25000,
   },
   {
     name: "Diamond",
