@@ -19,6 +19,7 @@ interface TapPageProps {
   guru?: boolean;
   autoBot?: boolean;
   autoEarning?: number;
+  userTotalAmount: number;
 }
 
 const TapPage: React.FC<TapPageProps> = ({
@@ -33,6 +34,7 @@ const TapPage: React.FC<TapPageProps> = ({
   maxEnergyLimit,
   energyFillSpeed,
   currentEnergy,
+  userTotalAmount,
 }) => {
   // useEffect(() => {
   //   socket.on("top", (data: any) => {
@@ -71,7 +73,7 @@ const TapPage: React.FC<TapPageProps> = ({
   // };
 
   const handleCoinClick = useCallback(() => {
-    sendMessage(JSON.stringify({ topic: "upgrade" }));
+    sendMessage(JSON.stringify({ topic: "tap", request: "" }));
   }, []);
 
   return (

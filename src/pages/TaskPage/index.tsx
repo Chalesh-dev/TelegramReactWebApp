@@ -8,39 +8,27 @@ import Leagues from "../../components/Task/Leagues";
 import "./tasks.css";
 import RefTasks from "../../components/Task/RefTasks";
 
-interface TaskPageProps {
-  userBalance: number;
-  setUserBalance: React.Dispatch<React.SetStateAction<number>>;
-  tasks: never[];
-  setTasks: React.Dispatch<React.SetStateAction<never[]>>;
-  unClaimedLeagues: never[];
-  setUnClaimedLeagues: React.Dispatch<React.SetStateAction<never[]>>;
-  claimableLeagues: never[];
-  setClaimableLeagues: React.Dispatch<React.SetStateAction<never[]>>;
-  unClaimedRefs: never[];
-  setUnClaimedRefs: React.Dispatch<React.SetStateAction<never[]>>;
-  claimableRefs: never[];
-  setClaimableRefs: React.Dispatch<React.SetStateAction<never[]>>;
-  socket: any;
+interface specialTypes {
+  uuid: string;
+  title: string;
+  reward: number;
+  link: string;
+  status: boolean;
+  claimed: boolean;
 }
 
-const TaskPage = ({
-  userBalance,
-  setUserBalance,
-  tasks,
-  setTasks,
-  unClaimedLeagues,
-  setUnClaimedLeagues,
-  claimableLeagues,
-  setClaimableLeagues,
-  unClaimedRefs,
-  setUnClaimedRefs,
-  claimableRefs,
-  setClaimableRefs,
-  socket,
-}: TaskPageProps) => {
+interface TaskPageProps {
+  userBalance: number;
+  special_tasks: specialTypes[];
+  leagues: any;
+  referral: any;
+  sendMessage: any;
+  taskClickAnswer: any;
+}
+
+const TaskPage = ({ userBalance, special_tasks, leagues, referral, sendMessage, taskClickAnswer }: TaskPageProps) => {
   const [specials, setSpecials] = useState(false);
-  const [leagues, setLeague] = useState(false);
+  const [league, setLeague] = useState(false);
   const [refTasks, setRefTasks] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -48,15 +36,15 @@ const TaskPage = ({
     setSpecials(true);
   }, []);
 
-  useEffect(() => {
-    setLoading(true);
-    socket.on("tasks", (data: any) => {
-      if (data) {
-        setTasks(data);
-        setLoading(false);
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   setLoading(true);
+  //   socket.on("tasks", (data: any) => {
+  //     if (data) {
+  //       setTasks(data);
+  //       setLoading(false);
+  //     }
+  //   });
+  // }, []);
 
   const handleActiveTab = (val: string) => {
     if (val === "special") {
@@ -87,7 +75,7 @@ const TaskPage = ({
             title={"Special"}
           />
           <Tab
-            className={leagues && "!bg-[#ef49c6cc]/60"}
+            className={league && "!bg-[#ef49c6cc]/60"}
             onClick={() => handleActiveTab("leagues")}
             title={"Leagues"}
             notComplete={true}
@@ -101,12 +89,13 @@ const TaskPage = ({
         <div className="container">
           {specials && (
             <Special
-              specials={tasks}
+              specials={special_tasks}
               loadingCards={loading}
-              setUserBalance={setUserBalance}
+              sendMessage={sendMessage}
+              taskClickAnswer={taskClickAnswer}
             />
           )}
-          {Leagues && (
+          {/* {Leagues && (
             <Leagues
               userBalance={userBalance}
               setUserBalance={setUserBalance}
@@ -116,8 +105,8 @@ const TaskPage = ({
               setClaimableLeagues={setClaimableLeagues}
               socket={socket}
             />
-          )}
-          {refTasks && (
+          )} */}
+          {/* {refTasks && (
             <RefTasks
               userBalance={userBalance}
               setUserBalance={setUserBalance}
@@ -127,7 +116,7 @@ const TaskPage = ({
               setClaimableRefs={setClaimableRefs}
               socket={socket}
             />
-          )}
+          )} */}
         </div>
       </RootLayout>
     </>

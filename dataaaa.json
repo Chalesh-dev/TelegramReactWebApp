@@ -1,0 +1,247 @@
+REF_TASKS = [
+    RefTask(title="invite 1 friends", reward=25_000, threshold=1),
+    RefTask(title="invite 3 friends", reward=50_000, threshold=3),
+    RefTask(title="invite 10 friends", reward=200_000, threshold=10),
+    RefTask(title="invite 25 friends", reward=250_000, threshold=25),
+    RefTask(title="invite 50 friends", reward=300_000, threshold=50),
+    RefTask(title="invite 100 friends", reward=500_000, threshold=100),
+    RefTask(title="invite 500 friends", reward=2_000000, threshold=500),
+    RefTask(title="invite 1000 friends", reward=2_500000, threshold=1000),
+    RefTask(title="invite 10000 friends", reward=10_000000, threshold=10000),
+    RefTask(title="invite 100000 friends", reward=100_000000, threshold=100000),
+  ]
+  
+  LEAGUES = [
+    LeagueType(title="Wooden League", reward=500, threshold=0),
+    LeagueType(title="Bronze League", reward=1000, threshold=1),
+    LeagueType(title="Silver League", reward=5000, threshold=5000),
+    LeagueType(title="Gold League", reward=10000, threshold=50000),
+    LeagueType(title="Platinum League", reward=25000, threshold=250000),
+  ]
+  
+  // server side -> App.js -> set values for useStates under ws.onMessage
+  [{
+    "topic": "balance",
+    "result": {
+      "balance": 1294773,
+      "multi_tap": 2,
+      "guru": false,
+      "auto_bot": true,
+      "league": 4
+    },
+    "status": true
+  },
+  {
+    "topic": "energy",
+    "result": {
+      "energy": 543,
+      "max_energy": 5000,
+      "energy_speed": 4
+    },
+    "status": true
+  },
+  {
+    "topic": "bot earning",
+    "result": {
+      "earning": 87862
+    },
+    "status": true
+  },
+  //  stats page
+  {
+    "topic": "stats",
+    "result": {
+      "total_touches": 4365365475648568,
+      "total_shares": "65.61 B",
+      "total_players": 124235346,
+      "online_players": 1823621,
+      "daily_players": 324374892
+    },
+    "status": true
+  },
+    //boost page
+  {
+    "topic": "special boost",
+    "result": {
+      "max_special_boost": 3,
+      "guru_left": 2,
+      "full_tank_left": 1,
+      "next_update": 1717426583, // unix time
+    },
+    "status": false
+  },
+  {
+    "topic": "boost",
+    "result": {
+      "multi_tap": {
+        "level": 6,
+        "is_max": false,
+        "next_level_price": 450000
+      },
+      "energy_limit":{
+        "level": 8,
+        "is_max": false,
+        "next_level_price": 250000
+      },
+      "recharging_speed": {
+        "level": 5,
+        "is_max": true,
+        "next_level_price": 0
+      },
+      "tap_bot": {
+        "level": 1,
+        "is_max": true,
+        "next_level_price": 0
+      }
+    },
+    "status": false
+  },
+    // tasks
+  {
+    "topic": "tasks",
+    "result": {
+      "special_tasks":[
+        {
+  
+          "uuid": "fc1372d5-9365-499c-95b1-127b634925cb",
+          "title": "blah blah",
+          "reward": 200000,
+          "link": "https://google.com/",
+          "status": false, // does user completed the task or not,
+          "claimed": false // does user claimed or not
+        },
+        {
+          "uuid": "fc1372d5-9365-499c-95b1-127b634925cb",
+          "title": "blah blah blah",
+          "reward": 200000,
+          "link": "https://yahoo.com/",
+          "status": true ,// does user completed the task or not,
+          "claimed": true // does user claimed or not
+        }
+      ] ,
+      "leagues": {
+        "unclaimed": [0,3],
+        "claimed": [1,2],
+        "current": 4,
+        "total_amount": 2654143
+      },
+      "referral": {
+        "unclaimed": [0,3],
+        "claimed": [1,2],
+        "current": 4,
+        "total_referral": 12
+      }
+    },
+    "status": true
+  },
+  // referral
+  {
+    "topic": "referral",
+    "result": {
+      "invite_link": "https://t.me/23182746846",
+      "my_refs": [
+        {
+          "name": "ali",
+          "league": 4,
+          "total_amount": 580851
+        }
+      ],
+      "ref_num": 1
+    }
+  },
+  { // example response to upgrade multi tap
+    "topic": "upgrade",
+    "status": true,
+    "result": {
+      "upgraded_unit": "multi_tap",
+      "new_level": 9,
+      "is_max": false,
+      "next_level_price": 2500000
+    }
+  },
+    { // response to activating boost for player
+      "topic": "activate",
+      "result": {
+        "unit": "guru",
+        "new_left": 1,
+        "finish_time": 1717422816, // for guru
+        "energy": 3000 // for refill tank
+      },
+      "success": true
+    },
+    {
+      "topic": "tap",
+      "result": {
+        "balance": 1291437,
+        "amount": 28178732988257,
+        "energy": 782
+      },
+      "status": false
+    },
+    {
+      "topic": "check task",
+      "result": {
+        "balance_up": 300000,
+        "new_balance": 43543976984679
+      },
+      "status": true
+    },
+    {
+      "topic": "claim league",
+      "result": {
+        "unclaimed": [0,3],
+        "claimed": [1,2],
+        "current": 4,
+        "total_amount": 2654143,
+        "balance": 2176214,
+        "balance_up": 250000
+      },
+      "status": true
+    },{
+      "topic": "claim referral",
+      "result": {
+        "unclaimed": [1],
+        "claimed": [0],
+        "current": 2,
+        "total_referral": 5,
+        "balance": 2176214,
+        "balance_up": 250000
+      },
+      "status": true
+    }
+  ]
+  
+  
+  // client side -> pages -> onCliclk || useEffect []
+  
+  [
+    {
+      "topic": "activate",
+      "request": "guru" // or "refill"
+    },
+    {
+    "topic": "upgrade",
+      "request": "multi_tap"  // or "limit","speed","bot"
+  },
+    { // tap
+    "topic": "tap",
+    "request": ""
+  },
+  {
+    "topic": "check task",
+    "request": "fc1372d5-9365-499c-95b1-127b634925cb" // uuid for task
+  },
+  ,{
+    "topic": "claim",
+    "type": "referral", // "league", "special"
+    "request": 3 // index of ref task
+  },
+  {
+    "topic": "stats data",
+    "request" : ""
+  }, // -> resp: "topic": "stats"
+  {  
+    "topic": "referral data",
+    "request" : ""
+  } // -> resp: "topic": "referral"
+  ]

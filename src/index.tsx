@@ -114,22 +114,6 @@ const root = ReactDOM.createRoot(
 // const socket = "frrfr";
 
 const App = () => {
-  //   const [socket, setSocket] = useState(null);
-  //   useEffect(() => {
-  //     const socket = io("ws://192.168.88.168:8080");
-
-  // //@ts-ignore
-  // setSocket(socket);
-  // socket.on("connect", () => {
-  //   console.log("eee");
-  //   socket.emit("join", "C++");
-  // });
-
-  // socket.emit("user_login", 12, (data: any) => {
-  //   console.log(data);
-  // });
-  // }, []);
-
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
   // const [initDataUnsafe] = useInitData();
   // const telegramUserId = initDataUnsafe?.user?.id;
@@ -144,6 +128,7 @@ const App = () => {
 
   /********************user trophy ******************/
   const [userTrophy, setUserTrophy] = useState<number>(0);
+  const [userTotalAmount, setUserTotalAmount] = useState<number>(0);
 
   /********************Tap page *********************/
   const [userLevel, setUserLevel] = useState<number>(0);
@@ -157,43 +142,51 @@ const App = () => {
   //******************boost page *******************/
   const [boostMultiScore, setBoostMultiScore] = useState<number>(0);
   const [boostMultiLevel, setBoostMultilevel] = useState<number>(0);
+  const [boostMultiIsMax, setBoostMultiIsMax] = useState<boolean>(false);
 
   const [boostEnergyLimitScore, setBoostEnergyLimitScore] = useState<number>(0);
   const [boostEnergyLimitLevel, setBoostEnergyLimitLevel] = useState<number>(0);
+  const [boostEnergyLimitIsMax, setBoostEnergyLimitIsMax] =
+    useState<boolean>(false);
 
   const [boostRechargingScore, setBoostRechargingScore] = useState<number>(0);
   const [boostRechargingLevel, setBoostRechargingLevel] = useState<number>(0);
+  const [boostRechargingIsMax, setBoostRechargingIsMAx] =
+    useState<boolean>(false);
 
-  const [guruRemains, setGuruRemains] = useState(3);
-  const [guruState, setGuruState] = useState(false);
+  const [boostBotLevel, setBoostBotLevel] = useState<number>(0);
+  const [boostBotIsMax, setBoostBotIsMax] = useState<boolean>(false);
+  const [boostBotScore, setBoostBotScore] = useState<number>(0);
 
-  const [TankRemains, setTankRemains] = useState(3);
-  const [startTankTime, setStartTankTime] = useState("");
+  const [guruLeft, setGuruLeft] = useState(0);
+  const [TankLeft, setTankLeft] = useState(0);
+  const [max_special_boost, setMax_special_boost] = useState(0);
+  const [next_update, setNext_update] = useState(0);
 
   /********************Stats page**************************/
-  const [totalShareBalance, setTotalShareBalance] = useState(0);
-  const [totalTouches, setTotalTouches] = useState(0);
-  const [totalPlayers, setTotalPlayers] = useState(0);
-  const [dailyUsers, setDailyUsers] = useState(0);
-  const [onlinePlayers, setOnlinePlayers] = useState(0);
+  const [totalShareBalance, setTotalShareBalance] = useState<string>("");
+  const [totalTouches, setTotalTouches] = useState<number>(0);
+  const [totalPlayers, setTotalPlayers] = useState<number>(0);
+  const [dailyUsers, setDailyUsers] = useState<number>(0);
+  const [onlinePlayers, setOnlinePlayers] = useState<number>(0);
 
   /******************Task page ***************************/
   const [tasks, setTasks] = useState([]);
-  const [unClaimedLeagues, setUnClaimedLeagues] = useState([]);
-  const [claimableLeagues, setClaimableLeagues] = useState([]);
-  const [unClaimedRefs, setUnClaimedRefs] = useState([]);
-  const [claimableRefs, setClaimableRefs] = useState([]);
+  const [leagues, setLeagues] = useState([]);
+  const [refs, setRefs] = useState([]);
+  const [taskClickAnswer, setTaskClickAnswer] = useState([]);
 
   /******************Ref page ****************************/
+  const [myRefs, setMyRefs] = useState(null);
 
   /*********************End ******************************/
 
   /*********************sockets *************************/
-  const socket = 123456789;
 
-  const WS_URL = "ws://192.168.88.168:8080/" + telegramUserId;
+  const WS_URL = "ws://127.0.0.1:6001/" + telegramUserId;
   //Public API that will echo messages sent to it back to the client
   const socketUrlRef = useRef(WS_URL);
+
   const { sendMessage, lastJsonMessage } = useWebSocket(socketUrlRef.current, {
     onOpen: () => console.log("Connected to WebSocket"),
     onMessage: (message) => {
@@ -203,24 +196,95 @@ const App = () => {
         const topic = parsedData?.topic;
         const status = parsedData?.status;
         if (status) {
-          setLoading(true);
+          /**tap page */
           if (topic === "balance") {
             setUserBalance(Number(data?.balance));
             setUserLevel(Number(data?.multi_tap));
             setGuru(data?.guru);
             setUserTrophy(data?.league);
             setAutoBot(data?.auto_bot);
-            setLoading(false);
-          }
-          if (topic === "energy") {
-            setCurrentEnergy(Number(data?.current_energy));
+          } else if (topic === "energy") {
+            setCurrentEnergy(Number(data?.energy));
             setMaxEnergyLimit(Number(data?.max_energy));
             setEnergyFillSpeed(Number(data?.energy_speed));
-            setLoading(false);
-          }
-          if (topic === "auto_bot_earning") {
+          } else if (topic === "bot earning") {
             setAutoEarning(Number(data?.earning));
-            setLoading(false);
+          } else if (topic === "stats") {
+            /*****stats page */
+            setTotalShareBalance(data?.total_shares);
+            setTotalTouches(data?.total_touches);
+            setTotalPlayers(data?.total_players);
+            setDailyUsers(data?.daily_players);
+            setOnlinePlayers(data?.online_players);
+          } else if (topic === "special boost") {
+            /**boost page */
+            setGuruLeft(data?.guru_left);
+            setTankLeft(data?.full_tank_left);
+            setNext_update(data?.next_update);
+            setMax_special_boost(data?.max_special_boost);
+          } else if (topic === "boost") {
+            /**multi */
+            setBoostMultiScore(data?.multi_tap?.next_level_price);
+            setBoostMultilevel(data?.multi_tap?.level);
+            setBoostMultiIsMax(data?.multi_tap?.is_max);
+            /**energy_limit */
+            setBoostEnergyLimitIsMax(data?.energy_limit?.is_max);
+            setBoostEnergyLimitLevel(data?.energy_limit?.level);
+            setBoostEnergyLimitScore(data?.energy_limit?.next_level_price);
+            /**recharging */
+            setBoostRechargingScore(data?.recharging_speed?.next_level_price);
+            setBoostRechargingLevel(data?.recharging_speed?.level);
+            setBoostRechargingIsMAx(data?.recharging_speed?.is_max);
+            /**bot */
+            setBoostBotLevel(data?.tap_bot?.level);
+            setBoostBotIsMax(data?.tap_bot?.is_max);
+            setBoostBotScore(data?.tap_bot?.next_level_price);
+          } else if (topic === "activate") {
+            let unit = data?.unit;
+            if (unit === "guru") {
+              setGuruLeft(data?.new_left);
+            } else {
+              setTankLeft(data?.new_left);
+            }
+            setNext_update(data?.finish_time);
+            setCurrentEnergy(data?.energy);
+          } else if (topic === "upgrade") {
+            let unit = data?.upgraded_unit;
+            if (unit === "multi_tap") {
+              setBoostMultiIsMax(data?.is_max);
+              setBoostMultilevel(data?.new_level);
+              setBoostMultiScore(data?.next_level_price);
+            }
+            if (unit === "limit") {
+              setBoostEnergyLimitIsMax(data?.is_max);
+              setBoostEnergyLimitLevel(data?.new_level);
+              setBoostEnergyLimitScore(data?.next_level_price);
+            }
+            if (unit === "speed") {
+              setBoostRechargingIsMAx(data?.is_max);
+              setBoostRechargingLevel(data?.new_level);
+              setBoostRechargingScore(data?.next_level_price);
+            }
+            if (unit === "bot") {
+              setBoostBotIsMax(data?.is_max);
+              setBoostBotLevel(data?.new_level);
+              setBoostBotScore(data?.next_level_price);
+            }
+            setUserBalance(data?.balance);
+          } else if (topic === "tasks") {
+            /****task page */
+            setTasks(data?.special_tasks);
+            setLeagues(data?.leagues);
+            setRefs(data?.referral);
+          } else if (topic === "task pending") {
+            setTaskClickAnswer(data);
+          } else if (topic === "referral") {
+            /***referral page */
+            setMyRefs(data);
+          } else if (topic === "tap") {
+            setCurrentEnergy(data?.energy);
+            setUserBalance(data?.balance);
+            setUserTotalAmount(data?.amount);
           }
         }
       } catch (error) {
@@ -371,6 +435,8 @@ const App = () => {
   // ];
 
   useEffect(() => {
+    console.log(currentEnergy);
+
     setInterval(() => {
       if (currentEnergy < maxEnergyLimit) {
         setCurrentEnergy((prevState) => {
@@ -382,7 +448,7 @@ const App = () => {
         });
       }
     }, 1000);
-  }, []);
+  }, [maxEnergyLimit, energyFillSpeed]);
 
   return (
     <WebAppProvider options={{ smoothButtonsTransition }}>
@@ -399,7 +465,6 @@ const App = () => {
               <TapPage
                 loading={loading}
                 sendMessage={sendMessage}
-                // userId={telegramUserId}
                 userBalance={userBalance}
                 guru={guru}
                 autoBot={autoBot}
@@ -409,81 +474,64 @@ const App = () => {
                 energyFillSpeed={energyFillSpeed}
                 currentEnergy={currentEnergy}
                 autoEarning={autoEarning}
+                userTotalAmount={userTotalAmount}
               />
             }
           />
-          {/* <Route
-              path="/stats"
-              element={
-                <StatsPage
-                  userId={telegramUserId}
-                  userBalance={userBalance}
-                  totalShareBalance={totalShareBalance}
-                  setTotalShareBalance={setTotalShareBalance}
-                  totalTouches={totalTouches}
-                  setTotalTouches={setTotalTouches}
-                  totalPlayers={totalPlayers}
-                  setTotalPlayers={setTotalPlayers}
-                  dailyUsers={dailyUsers}
-                  setDailyUsers={setDailyUsers}
-                  onlinePlayers={onlinePlayers}
-                  setOnlinePlayers={setOnlinePlayers}
-                  socket={socket}
-                />
-              }
-            /> */}
-          {/* <Route
-              path="/boost"
-              element={
-                <BoostPage
-                  userId={Number(telegramUserId)}
-                  userBalance={Number(userBalance)}
-                  setUserBalance={setUserBalance}
-                  guruRemains={guruRemains}
-                  setGuruRemains={setGuruRemains}
-                  guruState={guruState}
-                  setGuruState={setGuruState}
-                  tankRemains={TankRemains}
-                  setTankRemains={setTankRemains}
-                  startTankTime={startTankTime}
-                  setStartTankTime={setStartTankTime}
-                  multiScore={boostMultiScore}
-                  setMultiScore={setBoostMultiScore}
-                  multiLevel={boostMultiLevel}
-                  setMultiLevel={setBoostMultilevel}
-                  energyLimitScore={boostEnergyLimitScore}
-                  setEnergyLimitScore={setBoostEnergyLimitScore}
-                  energyLimitLevel={boostEnergyLimitLevel}
-                  setEnergyLimitLevel={setBoostEnergyLimitLevel}
-                  rechargingLevel={boostRechargingLevel}
-                  setRechargingLevel={setBoostRechargingLevel}
-                  rechargingScore={boostRechargingScore}
-                  setRechargingScore={setBoostRechargingScore}
-                  socket={socket}
-                />
-              }
-            /> */}
-          {/* <Route
-              path="/task"
-              element={
-                <TaskPage
-                  // userId={telegramUserId}
-                  userBalance={Number(userBalance)}
-                  setUserBalance={setUserBalance}
-                  tasks={tasks}
-                  setTasks={setTasks}
-                  unClaimedLeagues={unClaimedLeagues}
-                  setUnClaimedLeagues={setUnClaimedLeagues}
-                  claimableLeagues={claimableLeagues}
-                  setClaimableLeagues={setClaimableLeagues}
-                  unClaimedRefs={unClaimedRefs}
-                  setUnClaimedRefs={setUnClaimedRefs}
-                  claimableRefs={claimableRefs}
-                  setClaimableRefs={setClaimableRefs}
-                  socket={socket}
-                />
-              }
-            /> */}
+
+          <Route
+            path="/stats"
+            element={
+              <StatsPage
+                userBalance={userBalance}
+                totalShareBalance={totalShareBalance}
+                totalTouches={totalTouches}
+                totalPlayers={totalPlayers}
+                dailyUsers={dailyUsers}
+                onlinePlayers={onlinePlayers}
+              />
+            }
+          />
+
+          <Route
+            path="/boost"
+            element={
+              <BoostPage
+                userBalance={userBalance}
+                boostMultiScore={boostMultiScore}
+                boostMultiLevel={boostMultiLevel}
+                boostMultiIsMax={boostMultiIsMax}
+                boostEnergyLimitScore={boostEnergyLimitScore}
+                boostEnergyLimitLevel={boostEnergyLimitLevel}
+                boostEnergyLimitIsMax={boostEnergyLimitIsMax}
+                boostRechargingScore={boostRechargingScore}
+                boostRechargingLevel={boostRechargingLevel}
+                boostRechargingIsMax={boostRechargingIsMax}
+                boostBotLevel={boostBotLevel}
+                boostBotIsMax={boostBotIsMax}
+                boostBotScore={boostBotScore}
+                guruLeft={guruLeft}
+                tankLeft={TankLeft}
+                max_special_boost={max_special_boost}
+                next_update={next_update}
+                sendMessage={sendMessage}
+              />
+            }
+          />
+
+          <Route
+            path="/task"
+            element={
+              <TaskPage
+                userBalance={Number(userBalance)}
+                special_tasks={tasks}
+                leagues={leagues}
+                referral={refs}
+                sendMessage={sendMessage}
+                taskClickAnswer={taskClickAnswer}
+              />
+            }
+          />
           {/* <Route
               path="/trophy"
               element={

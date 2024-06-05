@@ -1,4 +1,16 @@
+import React from "react";
 import { IoIosArrowForward } from "react-icons/io";
+
+interface CardTypes {
+  icon?: React.ReactElement<any, any>;
+  name: string;
+  coin_num: number;
+  level?: number;
+  onClick: React.MouseEventHandler<never>;
+  arrow?: boolean;
+  key?: number;
+  isMax?: boolean;
+}
 
 const Card = ({
   icon,
@@ -8,7 +20,8 @@ const Card = ({
   onClick,
   arrow = true,
   key,
-}: any) => {
+  isMax,
+}: CardTypes) => {
   return (
     <div
       key={key}
@@ -17,7 +30,11 @@ const Card = ({
     >
       <div className="flex items-center gap-4">
         {icon}
-        <div className="flex flex-col justify-evenly gap-1 xs:text-xs text-[0.7rem]">
+        <div
+          className={`flex flex-col justify-evenly gap-1 xs:text-xs text-[0.7rem] ${
+            isMax ? "text-gray-500" : "text-white"
+          }`}
+        >
           {name ? name : "---"}
           <div className="flex items-center gap-2">
             <div className="flex gap-1.5 items-center">
@@ -27,7 +44,11 @@ const Card = ({
               </span>
             </div>
             {level && (
-              <div className="flex items-center xs:text-xs text-[0.7rem] text-gray-400">
+              <div
+                className={`flex items-center xs:text-xs text-[0.7rem] ${
+                  isMax ? "text-gray-500" : "text-gray-400"
+                }`}
+              >
                 | + {level ? level : "---"} level
               </div>
             )}

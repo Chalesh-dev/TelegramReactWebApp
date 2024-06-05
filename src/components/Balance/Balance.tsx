@@ -9,9 +9,8 @@ interface BalanceType {
   referral?: boolean;
   referral_score?: number;
   referral_status?: boolean;
-  stats?: boolean;
-  balance?: number;
-  user_trophy: string
+  balance?: number | string;
+  user_trophy?: string
 }
 
 const Balance = ({
@@ -21,7 +20,6 @@ const Balance = ({
   referral,
   referral_score,
   referral_status = false,
-  stats,
   balance,
   user_trophy
 }: BalanceType) => {
@@ -50,7 +48,7 @@ const Balance = ({
               </span>
             )} */}
             <span className="text-3xl text-white font-bold">
-              {balance} {stats && " T"}
+              {balance} 
             </span>
           </div>
           {cup && (

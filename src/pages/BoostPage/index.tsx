@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import bgImg from "../../assets/bg_images/bg-6.png";
 import Balance from "../../components/Balance/Balance";
 import {
@@ -17,71 +17,50 @@ import Card from "../../components/Card";
 import { useNavigate } from "react-router-dom";
 
 interface BoostPageProps {
-  userId: number;
+  guruLeft: number;
+  tankLeft: number;
+  max_special_boost: number;
+  next_update: number;
+
+  boostBotLevel: number;
+  boostBotIsMax: boolean;
+  boostBotScore: number;
+
+  boostRechargingScore: number;
+  boostRechargingLevel: number;
+  boostRechargingIsMax: boolean;
+
+  boostEnergyLimitScore: number;
+  boostEnergyLimitLevel: number;
+  boostEnergyLimitIsMax: boolean;
+
+  boostMultiScore: number;
+  boostMultiLevel: number;
+  boostMultiIsMax: boolean;
+
   userBalance: number;
-  setUserBalance: React.Dispatch<React.SetStateAction<number>>;
-
-  guruRemains: number;
-  setGuruRemains: React.Dispatch<React.SetStateAction<number>>;
-
-  guruState: boolean;
-  setGuruState: React.Dispatch<React.SetStateAction<boolean>>;
-
-  tankRemains: number;
-  setTankRemains: React.Dispatch<React.SetStateAction<number>>;
-
-  startTankTime: string;
-  setStartTankTime: React.Dispatch<React.SetStateAction<string>>;
-
-  multiScore: number;
-  setMultiScore: React.Dispatch<React.SetStateAction<number>>;
-  multiLevel: number;
-  setMultiLevel: React.Dispatch<React.SetStateAction<number>>;
-
-  energyLimitScore: number;
-  setEnergyLimitScore: React.Dispatch<React.SetStateAction<number>>;
-  energyLimitLevel: number;
-  setEnergyLimitLevel: React.Dispatch<React.SetStateAction<number>>;
-
-  rechargingLevel: number;
-  setRechargingLevel: React.Dispatch<React.SetStateAction<number>>;
-  rechargingScore: number;
-  setRechargingScore: React.Dispatch<React.SetStateAction<number>>;
-
-  socket: any;
+  sendMessage: any;
 }
 
 const BoostPage = ({
-  userId,
+  boostMultiScore,
+  boostMultiLevel,
+  boostMultiIsMax,
+  boostEnergyLimitScore,
+  boostEnergyLimitLevel,
+  boostEnergyLimitIsMax,
+  boostRechargingScore,
+  boostRechargingLevel,
+  boostRechargingIsMax,
+  boostBotLevel,
+  boostBotIsMax,
+  boostBotScore,
+  guruLeft,
+  tankLeft,
+  max_special_boost,
+  next_update,
   userBalance,
-  setUserBalance,
-
-  guruRemains,
-  setGuruRemains,
-  guruState,
-  setGuruState,
-
-  tankRemains,
-  setTankRemains,
-  startTankTime,
-  setStartTankTime,
-
-  multiScore,
-  setMultiScore,
-  multiLevel,
-  setMultiLevel,
-
-  energyLimitScore,
-  setEnergyLimitScore,
-  energyLimitLevel,
-  setEnergyLimitLevel,
-
-  rechargingLevel,
-  setRechargingLevel,
-  rechargingScore,
-  setRechargingScore,
-
-  socket,
+  sendMessage,
 }: BoostPageProps) => {
   /**open Modal */
   const [openMulti, setOpenMulti] = useState(false);
@@ -93,55 +72,66 @@ const BoostPage = ({
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const handleOpenGuru = () => {
+    if (guruLeft !== 0) {
+      setOpenGuru(true);
+    }
+  };
+
   //todo: check sockets with ali
-  socket.on("guru", (data: any) => {
-    setGuruRemains(data?.remain);
-    // setStartGuruTime(data?.guru_time);
-  });
+  // socket.on("guru", (data: any) => {
+  //   setGuruRemains(data?.remain);
+  //   // setStartGuruTime(data?.guru_time);
+  // });
 
-  socket.on("tank", (data: any) => {
-    setTankRemains(data?.remain);
-    setStartTankTime(data?.tank_time);
-  });
+  // socket.on("tank", (data: any) => {
+  //   setTankRemains(data?.remain);
+  //   setStartTankTime(data?.tank_time);
+  // });
 
-  socket.on("multitap", (data: any) => {
-    setMultiLevel(data?.level);
-    setMultiScore(data?.score);
-  });
+  // socket.on("multitap", (data: any) => {
+  //   setMultiLevel(data?.level);
+  //   setMultiScore(data?.score);
+  // });
 
-  socket.on("energy_limit", (data: any) => {
-    setEnergyLimitLevel(data?.level);
-    setEnergyLimitScore(data?.score);
-  });
+  // socket.on("energy_limit", (data: any) => {
+  //   setEnergyLimitLevel(data?.level);
+  //   setEnergyLimitScore(data?.score);
+  // });
 
-  socket.on("recharging_speed", (data: any) => {
-    setRechargingLevel(data?.level);
-    setRechargingScore(data?.score);
-  });
+  // socket.on("recharging_speed", (data: any) => {
+  //   setRechargingLevel(data?.level);
+  //   setRechargingScore(data?.score);
+  // });
 
   //todo: should i emit socket in functions bellow.
-  const handleMulti = () => {
-    setUserBalance((prevState) => prevState - multiScore);
+  const handleMulti = useCallback(() => {
+    sendMessage(JSON.stringify({ topic: "upgrade", request: "multi_tap" }));
     setOpenMulti(false);
-  };
-  const handleEnergyLimit = () => {
-    setUserBalance((prevState) => prevState - energyLimitScore);
+  }, []);
+  const handleEnergyLimit = useCallback(() => {
+    sendMessage(JSON.stringify({ topic: "upgrade", request: "limit" }));
     setOpenEnergy(false);
-  };
-  const handleRecharging = () => {
-    setUserBalance((prevState) => prevState - rechargingScore);
+  }, []);
+  const handleRecharging = useCallback(() => {
+    sendMessage(JSON.stringify({ topic: "upgrade", request: "speed" }));
     setOpenRecharging(false);
-  };
+  }, []);
+  const handleBot = useCallback(() => {
+    sendMessage(JSON.stringify({ topic: "upgrade", request: "bot" }));
+    setOpenBot(false);
+  }, []);
 
-  const handleActiveGuru = () => {
+  const handleActiveGuru = useCallback(() => {
+    sendMessage(JSON.stringify({ topic: "activate", request: "guru" }));
     setOpenGuru(false);
     navigate("/tap");
-  };
-
-  const handleActiveTank = () => {
+  }, []);
+  const handleActiveTank = useCallback(() => {
+    sendMessage(JSON.stringify({ topic: "activate", request: "refill" }));
     setOpenFullTank(false);
     navigate("/tap");
-  };
+  }, []);
 
   return (
     <RootLayout
@@ -161,18 +151,26 @@ const BoostPage = ({
         </p>
         <div className="grid grid-cols-2 gap-2">
           <DailyBooster
-            icon={<FlameIcon size={28} color={"yellow"} />}
+            icon={
+              <FlameIcon size={28} color={guruLeft !== 0 ? "yellow" : "gray"} />
+            }
             name={"Taping Guru"}
-            remain_num={1}
-            onClick={() => setOpenGuru(true)}
+            remain_num={guruLeft}
+            onClick={handleOpenGuru}
+            max_boost={max_special_boost}
+            next_update={next_update}
           />
           <DailyBooster
             onClick={() => {
               setOpenFullTank(true);
             }}
-            icon={<FlashIcon size={28} color={"yellow"} />}
+            icon={
+              <FlashIcon size={28} color={tankLeft !== 0 ? "yellow" : "gray"} />
+            }
             name={"Full Tank"}
-            remain_num={3}
+            remain_num={tankLeft}
+            max_boost={max_special_boost}
+            next_update={next_update}
           />
         </div>
       </div>
@@ -189,32 +187,36 @@ const BoostPage = ({
         ) : (
           <>
             <Card
-              icon={<Hand color={"yellow"} size={28} />}
+              icon={<Hand color={boostMultiIsMax ? "gray" : "yellow"} size={28} />}
               name={"Multitap"}
-              coin_num={multiScore}
-              level={multiLevel}
-              onClick={() => setOpenMulti(true)}
+              coin_num={boostMultiScore}
+              level={boostMultiLevel}
+              onClick={() => setOpenMulti(!boostMultiIsMax)}
+              isMax={boostMultiIsMax}
             />
             <Card
-              icon={<BatteryIcon color={"yellow"} size={28} />}
+              icon={<BatteryIcon color={boostEnergyLimitIsMax ? "gray" : "yellow"} size={28} />}
               name={"Energy Limit"}
-              coin_num={energyLimitScore}
-              level={energyLimitLevel}
-              onClick={() => setOpenEnergy(true)}
+              coin_num={boostEnergyLimitScore}
+              level={boostEnergyLimitLevel}
+              onClick={() => setOpenEnergy(!boostEnergyLimitIsMax)}
+              isMax={boostEnergyLimitIsMax}
             />
             <Card
-              icon={<FlashIcon color={"yellow"} size={28} />}
+              icon={<FlashIcon color={boostRechargingIsMax ? "gray" : "yellow"} size={28} />}
               name={"Recharging Speed"}
-              coin_num={rechargingScore}
-              level={rechargingLevel}
-              onClick={() => setOpenRecharging(true)}
+              coin_num={boostRechargingScore}
+              level={boostRechargingLevel}
+              onClick={() => setOpenRecharging(!boostRechargingIsMax)}
+              isMax={boostRechargingIsMax}
             />
             <Card
-              icon={<Robot color={"yellow"} size={28} />}
+              icon={<Robot color={boostBotIsMax ? "gray" : "yellow"} size={28} />}
               name={"Tap Bot"}
-              coin_num={"1245"}
-              level={"18"}
-              onClick={() => setOpenBot(true)}
+              coin_num={boostBotScore}
+              level={boostBotLevel}
+              onClick={() => setOpenBot(!boostBotIsMax)}
+              isMax={boostBotIsMax}
             />
           </>
         )}
@@ -228,10 +230,10 @@ const BoostPage = ({
           icon={<Hand color={"yellow"} size={58} />}
           boostTitle={"MultiTap"}
           boostDescription={"Increase amount of TAP you can earn per one tap."}
-          boostTapInfo={`+${multiLevel} per tap for each level.`}
-          boostTokenRequired={multiScore}
-          boostLevel={multiLevel}
-          disabled={Number(userBalance) < Number(multiScore)}
+          boostTapInfo={`+${boostMultiLevel} per tap for each level.`}
+          boostTokenRequired={boostMultiScore}
+          boostLevel={boostMultiLevel + 1}
+          disabled={Number(userBalance) < Number(boostMultiScore)}
           onClick={handleMulti}
         ></Modal>
       )}
@@ -243,11 +245,11 @@ const BoostPage = ({
           icon={<BatteryIcon color={"yellow"} size={58} />}
           boostTitle={"Energy Limit"}
           boostDescription={"Increase amount of TAP you can earn per one tap."}
-          boostTapInfo={`+${energyLimitLevel} per tap for each level.`}
-          boostTokenRequired={energyLimitScore}
-          boostLevel={energyLimitLevel}
+          boostTapInfo={`+${boostEnergyLimitLevel} per tap for each level.`}
+          boostTokenRequired={boostEnergyLimitScore}
+          boostLevel={boostEnergyLimitLevel + 1}
           onClick={handleEnergyLimit}
-          disabled={Number(userBalance) < Number(energyLimitScore)}
+          disabled={Number(userBalance) < Number(boostEnergyLimitScore)}
         ></Modal>
       )}
 
@@ -258,11 +260,26 @@ const BoostPage = ({
           icon={<FlashIcon color={"yellow"} size={58} />}
           boostTitle={"Recharging Speed"}
           boostDescription={"Increase amount of TAP you can earn per one tap."}
-          boostTapInfo={`+${rechargingLevel} per tap for each level.`}
-          boostTokenRequired={rechargingScore}
-          boostLevel={rechargingLevel}
-          disabled={Number(userBalance) < Number(rechargingScore)}
+          boostTapInfo={`+${boostRechargingLevel} per tap for each level.`}
+          boostTokenRequired={boostRechargingScore}
+          boostLevel={boostRechargingLevel}
+          disabled={Number(userBalance) < Number(boostRechargingScore)}
           onClick={handleRecharging}
+        ></Modal>
+      )}
+
+      {openBot && (
+        <Modal
+          setOpenModal={setOpenBot}
+          openModal={openBot}
+          icon={<Robot color={"yellow"} size={58} />}
+          boostTitle={"Tap Bot"}
+          boostDescription={"Tap bot will tap when your energy is full."}
+          boostTapInfo={`Max bot work duration is 12 hours.`}
+          boostTokenRequired={boostRechargingScore}
+          boostLevel={boostRechargingLevel}
+          disabled={Number(userBalance) < Number(boostRechargingScore)}
+          onClick={handleBot}
         ></Modal>
       )}
 
