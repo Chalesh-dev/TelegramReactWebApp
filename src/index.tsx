@@ -188,7 +188,7 @@ const App = () => {
 
   /*********************sockets *************************/
 
-  const WS_URL = "ws://api.spxswap.com:8080/" + telegramUserId;
+  const WS_URL = "wss://api.spxswap.com:8080/" + telegramUserId;
   //Public API that will echo messages sent to it back to the client
   const socketUrlRef = useRef(WS_URL);
 
