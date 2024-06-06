@@ -1,53 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CardLoading from "../CardLoading";
 import CardBarComp from "./CardBarComp";
-import { FindIndexByName, trophies } from "../config/trophiesList";
+import Modal from "../Modal";
+import { refs } from "../config/refList";
+import { ReferralsIcon } from "../Icons";
 
-interface SingleRefTypes {
-  title: string;
-  threshold: number;
-  reward: number;
-}
-
-interface RefTypes {
-  userBalance: number;
-  setUserBalance: React.Dispatch<React.SetStateAction<number>>;
-  socket: any;
-  unClaimedRefs: SingleRefTypes[];
-  setUnClaimedRefs: React.Dispatch<React.SetStateAction<never[]>>;
-  claimableRefs: SingleRefTypes[];
-  setClaimableRefs: React.Dispatch<React.SetStateAction<never[]>>;
+interface refTypes {
+  referrals: any;
+  sendMessage: any;
+  balanceUpRef: number;
+  setBalanceUpRef: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const RefTasks = ({
-  userBalance,
-  setUserBalance,
-  socket,
-  unClaimedRefs,
-  setUnClaimedRefs,
-  claimableRefs,
-  setClaimableRefs,
-}: RefTypes) => {
+  referrals,
+  sendMessage,
+  balanceUpRef,
+  setBalanceUpRef,
+}: refTypes) => {
   const [loading, setLoading] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const refIdRef = useRef(0);
 
-  //todo: fix useEffect and handleClaim with ali....
   useEffect(() => {
-    setLoading(true);
-    socket.on("refs", (data: any) => {
-      if (data) {
-        setUnClaimedRefs(data.unClaimed);
-        setClaimableRefs(data.claimable);
-        setLoading(false);
-      }
-    });
-  }, []);
+    if (balanceUpRef) {
+      setOpenModal(true);
+      setBalanceUpRef(0);
+    }
+  }, [balanceUpRef]);
 
-  const handleClaim = (reward: number) => {
-    socket.emit("name", (data: any) => {
-      if (data.success) {
-        setUserBalance((prevState) => prevState + Number(reward));
-      }
-    });
+  const handleClaim = async (id: number) => {
+    sendMessage(JSON.stringify({ topic: "claim referral", request: id }));
+    refIdRef.current = id;
   };
 
   return (
@@ -61,33 +45,40 @@ const RefTasks = ({
         </>
       ) : (
         <>
-          {claimableRefs.map((ref, index) => {
-            return (
-              <CardBarComp
-                key={index}
-                img={'./images/cat.png'}
-                title={ref?.title}
-                price={Number(ref?.reward)}
-                disabled={false}
-                present_value={Number(userBalance)}
-                final_value={Number(ref?.threshold)}
-                onCLick={() => handleClaim(ref?.reward)}
-              />
-            );
-          })}
-          {unClaimedRefs.map((ref, index) => {
-            return (
-              <CardBarComp
-                key={index}
-                img={'./images/cat.png'}
-                title={ref?.title}
-                price={Number(ref?.reward)}
-                disabled={true}
-                present_value={Number(userBalance)}
-                final_value={Number(ref?.threshold)}
-              />
-            );
-          })}
+          {openModal && (
+            <Modal
+              bot={true}
+              setOpenModal={setOpenModal}
+              openModal={openModal}
+              icon={<ReferralsIcon />}
+              boostTitle={refs[refIdRef.current].name}
+              boostDescription={`congratulations, You got "${
+                refs[refIdRef.current].name
+              }" ❤️`}
+              botEarning={refs[refIdRef.current].reward}
+              onClick={() => setOpenModal(false)}
+            ></Modal>
+          )}
+          {referrals?.unclaimed?.map((item: number) => (
+            <CardBarComp
+              icon={<ReferralsIcon />}
+              title={refs[item]?.name}
+              price={Number(refs[item]?.reward).toLocaleString()}
+              disabled={false}
+              present_value={referrals?.total_referral}
+              final_value={refs[item]?.threshold}
+              onCLick={() => handleClaim(item)}
+            />
+          ))}
+          <CardBarComp
+            icon={<ReferralsIcon />}
+            // img={"/images/coin-icon.png"}
+            title={refs[referrals?.current]?.name}
+            price={Number(refs[referrals?.current]?.reward).toLocaleString()}
+            disabled={true}
+            present_value={referrals?.total_referral}
+            final_value={refs[referrals?.current]?.threshold}
+          />
         </>
       )}
     </div>

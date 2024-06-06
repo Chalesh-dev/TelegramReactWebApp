@@ -19,7 +19,7 @@ import ShowPopupDemo from "./ShowPopupDemo";
 import HapticFeedbackDemo from "./HapticFeedbackDemo";
 import ScanQrPopupDemo from "./ScanQrPopupDemo";
 import useBetaVersion from "./useBetaVersion";
-import { useInitData } from "@vkruglikov/react-telegram-web-app";
+// import { useInitData } from "@vkruglikov/react-telegram-web-app";
 
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import TapPage from "./pages/TapPage";
@@ -114,9 +114,9 @@ const root = ReactDOM.createRoot(
 
 const App = () => {
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
-  const [initDataUnsafe] = useInitData();
-  const telegramUserId = initDataUnsafe?.user?.id;
-  // const telegramUserId = 123456;
+  // const [initDataUnsafe] = useInitData();
+  // const telegramUserId = initDataUnsafe?.user?.id;
+  const telegramUserId = 123456;
 
   /*********************Initial states*****************/
   const [init, setInit] = useState(false);
@@ -174,6 +174,8 @@ const App = () => {
   const [refs, setRefs] = useState([]);
   const [taskClickAnswer, setTaskClickAnswer] = useState([]);
   const [taskCheckResult, setTaskCheckResult] = useState([]);
+  const [balanceUp, setBalanceUp] = useState<number>(0);
+  const [balanceUpRef, setBalanceUpRef] = useState<number>(0);
 
   /******************Ref page ****************************/
   const [myRefs, setMyRefs] = useState([]);
@@ -188,7 +190,8 @@ const App = () => {
 
   /*********************sockets *************************/
 
-  const WS_URL = "wss://api.spxswap.com:8080/" + telegramUserId;
+  const WS_URL = "ws://apitest.spxswap.com:8080/" + telegramUserId;
+  // const WS_URL = "ws://192.168.88.166:8080/" + telegramUserId;
   //Public API that will echo messages sent to it back to the client
   const socketUrlRef = useRef(WS_URL);
 
@@ -258,17 +261,17 @@ const App = () => {
               setBoostMultilevel(data?.new_level);
               setBoostMultiScore(data?.next_level_price);
             }
-            if (unit === "limit") {
+            else if (unit === "limit") {
               setBoostEnergyLimitIsMax(data?.is_max);
               setBoostEnergyLimitLevel(data?.new_level);
               setBoostEnergyLimitScore(data?.next_level_price);
             }
-            if (unit === "speed") {
+            else if (unit === "speed") {
               setBoostRechargingIsMAx(data?.is_max);
               setBoostRechargingLevel(data?.new_level);
               setBoostRechargingScore(data?.next_level_price);
             }
-            if (unit === "bot") {
+            else if (unit === "bot") {
               setBoostBotIsMax(data?.is_max);
               setBoostBotLevel(data?.new_level);
               setBoostBotScore(data?.next_level_price);
@@ -279,6 +282,8 @@ const App = () => {
             setTasks(data?.special_tasks);
             setLeagues(data?.leagues);
             setRefs(data?.referral);
+            setUserTrophy(data?.leagues?.current);
+            setUserTotalAmount(data?.leagues?.total_amount);
           } else if (topic === "tasks status") {
             setTaskClickAnswer(data?.check);
             setTaskCheckResult(data?.claim);
@@ -293,6 +298,17 @@ const App = () => {
             setMyRefs(data?.my_refs);
             setInviteLink(data?.invite_link);
             setRefNum(data?.ref_num);
+            setUserTotalAmount(data?.total_amount);
+          } else if (topic === "claim league") {
+            setBalanceUp(data?.balance_up);
+            setUserBalance(data?.balance);
+            setLeagues(data?.leagues);
+            setUserTotalAmount(data?.leagues?.total_amount);
+          } else if (topic === "claim referral") {
+            setBalanceUpRef(data?.balance_up);
+            setUserBalance(data?.balance);
+            setRefs(data?.referral);
+            setUserTotalAmount(data?.leagues?.total_amount);
           }
         }
       } catch (error) {
@@ -413,6 +429,10 @@ const App = () => {
                 sendMessage={sendMessage}
                 taskClickAnswer={taskClickAnswer}
                 taskCheckResult={taskCheckResult}
+                balanceUp={balanceUp}
+                setBalanceUp={setBalanceUp}
+                balanceUpRef={balanceUpRef}
+                setBalanceUpRef={setBalanceUpRef}
               />
             }
           />
@@ -421,8 +441,8 @@ const App = () => {
             element={
               <TrophyPage
                 user_trophy={userTrophy}
-                leagues={}
-                userBalance={Number(userBalance)}
+                // leagues={}
+                userBalance={Number(userTotalAmount)}
               />
             }
           /> */}

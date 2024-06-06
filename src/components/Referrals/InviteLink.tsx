@@ -24,7 +24,7 @@ const InviteLink = ({ link }: InviteLinkTypes) => {
   return (
     <div className="p-3 rounded-md flex flex-col gap-1 w-full bg-[#9562a3]">
       <div className="flex justify-between items-center">
-        <h1 className="text-white font-bold text-2xl">My Invite Link:</h1>
+        <h1 className="text-white font-bold xs:text-2xl text-xl">My Invite Link:</h1>
         <button
           className="py-2 px-3 rounded-md bg-gradient-to-b from-purple-400 to-purple-800 flex justify-center items-center text-white text-sm"
           onClick={handleCopy}

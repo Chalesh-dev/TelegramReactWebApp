@@ -27,6 +27,10 @@ interface TaskPageProps {
   taskClickAnswer: any;
   taskCheckResult: any;
   userTrophy: number;
+  balanceUp: number;
+  balanceUpRef: number;
+  setBalanceUpRef: React.Dispatch<React.SetStateAction<number>>;
+  setBalanceUp: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const TaskPage = ({
@@ -38,6 +42,10 @@ const TaskPage = ({
   taskClickAnswer,
   taskCheckResult,
   userTrophy,
+  balanceUp,
+  balanceUpRef,
+  setBalanceUpRef,
+  setBalanceUp,
 }: TaskPageProps) => {
   const [specials, setSpecials] = useState(false);
   const [league, setLeague] = useState(false);
@@ -103,18 +111,22 @@ const TaskPage = ({
               taskCheckResult={taskCheckResult}
             />
           )}
-          {league && <Leagues leagues={leagues} />}
-          {/* {refTasks && (
-            <RefTasks
-              userBalance={userBalance}
-              setUserBalance={setUserBalance}
-              unClaimedRefs={unClaimedRefs}
-              setUnClaimedRefs={setUnClaimedRefs}
-              claimableRefs={claimableRefs}
-              setClaimableRefs={setClaimableRefs}
-              socket={socket}
+          {league && (
+            <Leagues
+              leagues={leagues}
+              sendMessage={sendMessage}
+              balanceUp={balanceUp}
+              setBalanceUp={setBalanceUp}
             />
-          )} */}
+          )}
+          {refTasks && (
+            <RefTasks
+              referrals={referral}
+              sendMessage={sendMessage}
+              balanceUpRef={balanceUpRef}
+              setBalanceUpRef={setBalanceUpRef}
+            />
+          )}
         </div>
       </RootLayout>
     </>

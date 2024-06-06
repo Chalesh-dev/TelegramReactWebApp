@@ -26,8 +26,8 @@ const RefPage = ({ myRefs, refNum, inviteLink }: RefPageTypes) => {
         {loading ? (
           <Loading />
         ) : (
-          <div className="flex flex-col p-5 items-center gap-3">
-            <h1 className="text-4xl text-white">{refNum} Referrals</h1>
+          <div className="flex flex-col items-center gap-3">
+            <h1 className="xs:text-4xl text-2xl text-white">{refNum} Referrals</h1>
             <InviteLink link={inviteLink} />
             <div className="w-full h-[1px] bg-slate-400 my-5" />
             <p className="mb-5 text-2xl">My Referrals :</p>

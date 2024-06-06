@@ -3,14 +3,18 @@ import ScoreBarComp from "../ScoreBarComp";
 import { BsCoin } from "react-icons/bs";
 
 interface CardBarCompTypes {
-  img: string;
+  img?: string;
   title: string;
-  price: number;
+  price: string;
   disabled: boolean;
   present_value: number;
   final_value: number;
   key?: number;
   onCLick?: React.MouseEventHandler<HTMLButtonElement>;
+  icon?:
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+    | Iterable<React.ReactNode>
+    | React.ReactPortal;
 }
 
 const CardBarComp = ({
@@ -22,6 +26,7 @@ const CardBarComp = ({
   final_value,
   key,
   onCLick,
+  icon,
 }: CardBarCompTypes) => {
   return (
     <div
@@ -30,7 +35,11 @@ const CardBarComp = ({
     >
       <div className="flex justify-between items-center">
         <div className="flex gap-3 justify-center items-center">
-          <img className="w-[35px] h-[35px]" src={img} alt="change" />
+          {icon ? (
+            icon
+          ) : (
+            <img className="w-[35px] h-[35px]" src={img} alt="change" />
+          )}
           <div className="flex gap-1 flex-col justify-center items-center">
             <span className="text-[0.8rem]">{title}</span>
             <div className="flex gap-2 justify-center items-center">
