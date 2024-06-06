@@ -12,7 +12,7 @@ const ScoreBarComp = (props: ScoreBarCompTypes) => {
   const from = props.from || "from-fuchsia-300";
   const via = props.via || "via-fuchsia-600";
   const to = props.to || "to-fuchsia-700";
-  const progressivePercentage = (props.present_value / props.final_value) * 100;
+  const progressivePercentage = (props?.present_value / props?.final_value) * 100;
   return (
     <div
       className={`flex flex-col justify-center items-center w-full ${props.padding}`}

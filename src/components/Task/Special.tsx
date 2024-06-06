@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import Card from "../Card";
-import { TaskIcon } from "../Icons";
+import { Check, TaskIcon } from "../Icons";
 import Modal from "../Modal";
 import CustomBtn from "../CustomBtn";
 import CardLoading from "../CardLoading";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface specialsProps {
   uuid: string;
@@ -19,10 +19,8 @@ interface SpecialTypes {
   loadingCards: boolean;
   specials: specialsProps[];
   sendMessage: any;
-  taskClickAnswer: {
-    set_pending: boolean;
-    task_id: string;
-  };
+  taskClickAnswer: string[];
+  taskCheckResult: string[];
   // setUserBalance: React.Dispatch<React.SetStateAction<number>>;
 }
 
@@ -31,23 +29,20 @@ const Special = ({
   specials,
   sendMessage,
   taskClickAnswer,
+  taskCheckResult,
 }: SpecialTypes) => {
   const [specialInfo, setSpecialInfo] = useState<specialsProps | null>(null);
   const [openModal, setOpenModal] = useState(false);
-  const [check, setCheck] = useState(false);
+  const [check, setCheck] = useState<string[]>([]);
+  const [claim, setClaim] = useState<string[]>([]);
   const navigate = useNavigate();
 
+  
   //todo:ask ali why when click amd then back it got error
   useEffect(() => {
-    if (taskClickAnswer && specialInfo) {
-      if (
-        taskClickAnswer?.set_pending &&
-        specialInfo?.uuid === taskClickAnswer?.task_id
-      ) {
-        setCheck(true);
-      } else {
-        setCheck(false);
-      }
+    if (taskClickAnswer && taskCheckResult && specialInfo) {
+      setCheck(taskClickAnswer);
+      setClaim(taskCheckResult);
     }
   }, [openModal]);
 
@@ -68,19 +63,16 @@ const Special = ({
         navigate("/");
       }
       sendMessage(JSON.stringify({ topic: "task pending", request: uuid }));
-      setCheck(true);
     },
     []
   );
 
   const handleTaskCheck = useCallback((taskId: string | undefined) => {
-    //todo: when click on check button a socket should be emmited which check is really this person do the task and then "Finish Mission" button activated
-    //todo: i am waiting till socket answered
+    sendMessage(JSON.stringify({ topic: "task check", request: taskId }));
   }, []);
 
-  const handleSubmitTask = useCallback((amount: number | undefined) => {
-    //todo: when successfully socket answered i added balance
-    // setUserBalance((prevState) => prevState + Number(amount));
+  const handleSubmitTask = useCallback((taskId: string | undefined) => {
+    sendMessage(JSON.stringify({ topic: "claim task", request: taskId }));
     setOpenModal(false);
   }, []);
 
@@ -99,7 +91,10 @@ const Special = ({
             return (
               <Card
                 key={index}
-                onClick={() => handleGetTaskDetails(index)}
+                claimed={item?.claimed}
+                onClick={
+                  item?.claimed ? () => {} : () => handleGetTaskDetails(index)
+                }
                 icon={<TaskIcon />}
                 name={item?.title}
                 coin_num={Number(item?.reward)}
@@ -117,26 +112,31 @@ const Special = ({
         >
           <div className="p-3 rounded-md flex justify-between bg-slate-900 items-center">
             <span className="text-white text-sm">{specialInfo?.title}</span>
-            {check ? (
+            {check.includes(specialInfo?.uuid ?? "") && (
               <CustomBtn
                 title={"Check"}
                 onClick={() => handleTaskCheck(specialInfo?.uuid)}
                 className={"text-base"}
               />
-            ) : (
-              <CustomBtn
-                title={"Go"}
-                onClick={() =>
-                  handleTaskGo(specialInfo?.link, specialInfo?.uuid)
-                }
-                className={"text-base"}
-              />
+            )}
+            {!claim.includes(specialInfo?.uuid ?? "") &&
+              !check.includes(specialInfo?.uuid ?? "") && (
+                <CustomBtn
+                  title={"Go"}
+                  onClick={() =>
+                    handleTaskGo(specialInfo?.link, specialInfo?.uuid)
+                  }
+                  className={"text-base"}
+                />
+              )}
+            {claim.includes(specialInfo?.uuid ?? "") && (
+              <Check color={"blue"} size={"26"} />
             )}
           </div>
           <CustomBtn
             title={"Finish mission"}
-            onClick={() => handleSubmitTask(specialInfo?.reward)}
-            disabled={true}
+            onClick={() => handleSubmitTask(specialInfo?.uuid)}
+            disabled={!claim.includes(specialInfo?.uuid ?? "")}
             className={"text-lg py-4 mt-3"}
           />
         </Modal>

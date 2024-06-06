@@ -1,5 +1,5 @@
 import React from "react";
-import { Close } from "./Icons";
+import { Close, Coin } from "./Icons";
 
 interface ModalTypes {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,6 +23,8 @@ interface ModalTypes {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   tap_tank?: boolean;
   disabled?: boolean;
+  bot?: boolean;
+  botEarning?: number | undefined | null;
 }
 
 const Modal = ({
@@ -40,11 +42,14 @@ const Modal = ({
   onClick,
   tap_tank,
   disabled,
+  bot,
+  botEarning,
 }: ModalTypes) => {
   return (
     <div
       className={`${
-        openModal && task ? "translate-y-24" : "translate-y-5"
+        openModal &&
+        (task ? "translate-y-24" : bot ? "translate-y-36" : "translate-y-5")
       } transition-all ease-linear duration-700 fixed w-full h-full bg-gray-800/95 right-0 top-0 z-[999] flex flex-col xs:p-5 p-3 shadow-lg drop-shadow-lg`}
       //   className={clsx(
       //     openModal ? "translate-y-0" : "translate-y-[100vh]",
@@ -86,9 +91,9 @@ const Modal = ({
             <h1 className="text-center xs:text-3xl text-xl text-white font-bold mt-8 mb-2">
               {boostTitle}
             </h1>
-            <p className="my-2 text-center">{boostDescription}</p>
+            <p className="my-2 text-center text-white">{boostDescription}</p>
             <p className="text-sm">{boostTapInfo}</p>
-            {!tap_tank && (
+            {!tap_tank && !bot && (
               <div className="flex w-full px-4 mt-8 justify-center gap-6 items-center">
                 <div className="flex gap-1 justify-center items-center">
                   <img src="/images/coin-icon.png" alt="coin" />
@@ -103,14 +108,24 @@ const Modal = ({
             {tap_tank && (
               <h1 className="font-bold xs:text-4xl text-2xl">Free</h1>
             )}
+            {bot && (
+              <div className="flex justify-center items-center gap-2">
+                <Coin color="yellow" size={28} />
+                <span className="text-white text-2xl">{botEarning}</span>
+              </div>
+            )}
             <button
               onClick={onClick}
-              className={`w-full bg-gradient-to-b from-slate-500 to-slate-700 xs:mt-10 mt-5 xs:py-7 py-3.5 rounded-md ${
+              className={`${
+                bot
+                  ? "bg-gradient-to-b from-purple-300 to-purple-800 text-3xl"
+                  : "bg-gradient-to-b from-slate-500 to-slate-700"
+              } w-full xs:mt-10 mt-5 xs:py-7 py-3.5 rounded-md ${
                 disabled && "text-gray-400"
               }`}
               disabled={disabled}
             >
-              {disabled ? "Insufficient amount" : "Upgrade"}
+              {bot ? "Get it!" : disabled ? "Insufficient amount" : "Upgrade"}
             </button>
           </div>
         )}

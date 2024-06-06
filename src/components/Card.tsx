@@ -1,5 +1,6 @@
 import React from "react";
 import { IoIosArrowForward } from "react-icons/io";
+import { Check } from "./Icons";
 
 interface CardTypes {
   icon?: React.ReactElement<any, any>;
@@ -10,6 +11,7 @@ interface CardTypes {
   arrow?: boolean;
   key?: number;
   isMax?: boolean;
+  claimed?: boolean
 }
 
 const Card = ({
@@ -21,6 +23,7 @@ const Card = ({
   arrow = true,
   key,
   isMax,
+  claimed
 }: CardTypes) => {
   return (
     <div
@@ -55,7 +58,8 @@ const Card = ({
           </div>
         </div>
       </div>
-      {arrow && <IoIosArrowForward />}
+      {arrow && !claimed && <IoIosArrowForward />}
+      {claimed && <Check color={'blue'} size={24} />}
     </div>
   );
 };

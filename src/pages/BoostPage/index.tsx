@@ -154,7 +154,7 @@ const BoostPage = ({
             icon={
               <FlameIcon size={28} color={guruLeft !== 0 ? "yellow" : "gray"} />
             }
-            name={"Taping Guru"}
+            name={"Angry Mode"}
             remain_num={guruLeft}
             onClick={handleOpenGuru}
             max_boost={max_special_boost}

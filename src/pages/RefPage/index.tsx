@@ -1,40 +1,24 @@
 import RootLayout from "../../components/RootLayout/RootLayout";
 import bgImg from "../../assets/bg_images/bg-5.png";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Loading from "../../components/LoadingComp/Loading";
 import InviteLink from "../../components/Referrals/InviteLink";
 import { Link } from "react-router-dom";
-import { Trophy } from "../../components/Icons";
-
-interface RefArrTypes {
-  referrer_name: string;
-  referrer_trophy: string;
-  referrer_score: number;
-  link: string;
-}
-
-interface RefType {
-  myReflink: string;
-  refsInfo: RefArrTypes[];
-}
-
+import { ArrowRight, Coin, Trophy } from "../../components/Icons";
+import { trophies } from "../../components/config/trophiesList";
 interface RefPageTypes {
-  socket: any;
+  myRefs: {
+    name: string;
+    league: number;
+    total_amount: number;
+    referrer_link: string;
+  }[];
+  refNum: number | 0;
+  inviteLink: string;
 }
 
-const RefPage = ({ socket }: RefPageTypes) => {
-  const [refs, setRefs] = useState<RefType | null>(null);
+const RefPage = ({ myRefs, refNum, inviteLink }: RefPageTypes) => {
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    socket.emit("ref", (data: any) => {
-      if (data) {
-        setRefs(data);
-        setLoading(false);
-      }
-    });
-  }, []);
 
   return (
     <>
@@ -43,26 +27,31 @@ const RefPage = ({ socket }: RefPageTypes) => {
           <Loading />
         ) : (
           <div className="flex flex-col p-5 items-center gap-3">
-            <h1 className="text-4xl text-white">
-              {refs?.refsInfo?.length} Referrals
-            </h1>
-            <InviteLink link={refs?.myReflink} />
+            <h1 className="text-4xl text-white">{refNum} Referrals</h1>
+            <InviteLink link={inviteLink} />
             <div className="w-full h-[1px] bg-slate-400 my-5" />
-            <p className="mb-5 text-2xl">My Referrals:</p>
-            <div className="flex flex-col gap-1 overflow-y-auto">
-              {refs?.refsInfo.map((ref, index) => (
+            <p className="mb-5 text-2xl">My Referrals :</p>
+            <div className="flex flex-col gap-1 overflow-y-auto w-full">
+              {myRefs?.map((ref) => (
                 <Link
-                  to={ref?.link}
-                  className="p-2 flex flex-col rounded-md bg-gradient-to-r from-purple-300 via-purple-500 to-purple-800"
+                  to={ref?.referrer_link}
+                  className="p-3 flex justify-between rounded-md bg-gradient-to-r from-purple-300 via-purple-500 to-purple-800 w-full items-center"
                 >
-                  <p className="text-white text-sm capitalize">
-                    {ref?.referrer_name}
-                  </p>
-                  <div className="flex gap-1 items-center">
-                    <Trophy color="#ccc" size={24} />
-                    <span className="text-[#ccc] text-xs">{}</span>
-
+                  <div className="flex flex-col gap-1">
+                    <p className="text-white text-sm capitalize">{ref?.name}</p>
+                    <div className="flex gap-3 items-center">
+                      <div className="flex items-center gap-1">
+                        <Trophy />
+                        {trophies[ref?.league]?.name}
+                      </div>
+                      <div>|</div>
+                      <div className="flex items-center gap-1.5">
+                        <Coin color={"yellow"} />
+                        {ref?.total_amount}
+                      </div>
+                    </div>
                   </div>
+                  <ArrowRight size={24} />
                 </Link>
               ))}
             </div>

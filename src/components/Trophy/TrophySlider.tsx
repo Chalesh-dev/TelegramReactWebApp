@@ -54,14 +54,14 @@ const TrophySlider = ({ user_trophy, userBalance }: TrophySliderTypes) => {
             <img src={trophies[index]?.src} alt={item?.name} />
             {index !== UserTrophyIndex && (
               <h1 className="font-bold text-white text-2xl">
-                From {Number(item?.amount).toLocaleString()}
+                From {Number(item?.reward).toLocaleString()}
               </h1>
             )}
             {index === UserTrophyIndex && (
               <div className="w-full">
                 <ScoreBarComp
                   present_value={userBalance}
-                  final_value={item?.amount}
+                  final_value={item?.reward}
                   values={true}
                 />
               </div>

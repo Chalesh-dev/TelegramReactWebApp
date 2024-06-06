@@ -7,6 +7,8 @@ import { IoMdClose } from "react-icons/io";
 import { MdBatteryCharging30 } from "react-icons/md";
 import { GiLaurelsTrophy } from "react-icons/gi";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import { FaCheck } from "react-icons/fa6";
+import { PiCoins } from "react-icons/pi";
 
 export const TaskIcon = () => {
   return (
@@ -56,8 +58,18 @@ export const Trophy = ({ color, size, onClick }: any) => {
   return <GiLaurelsTrophy onClick={onClick} color={color} size={size} />;
 };
 
+export const Check = ({ color, size, onClick }: any) => {
+  return <FaCheck onClick={onClick} color={color} size={size} />;
+};
+
 export const ArrowRight = ({ color, size, onClick }: any) => {
   return (
     <MdOutlineKeyboardArrowRight onClick={onClick} color={color} size={size} />
+  );
+};
+
+export const Coin = ({ color, size, onClick }: any) => {
+  return (
+    <PiCoins onClick={onClick} color={color} size={size} />
   );
 };

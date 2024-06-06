@@ -18,7 +18,6 @@ interface TapPageProps {
   loading?: boolean;
   guru?: boolean;
   autoBot?: boolean;
-  autoEarning?: number;
   userTotalAmount: number;
 }
 
@@ -27,7 +26,6 @@ const TapPage: React.FC<TapPageProps> = ({
   sendMessage,
   guru,
   autoBot,
-  autoEarning,
   userBalance,
   user_trophy,
   userLevel,

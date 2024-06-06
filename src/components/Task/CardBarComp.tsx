@@ -9,7 +9,7 @@ interface CardBarCompTypes {
   disabled: boolean;
   present_value: number;
   final_value: number;
-  key: number;
+  key?: number;
   onCLick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 

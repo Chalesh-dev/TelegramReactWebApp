@@ -48,7 +48,7 @@ const Balance = ({
               </span>
             )} */}
             <span className="text-3xl text-white font-bold">
-              {balance} 
+              {balance}
             </span>
           </div>
           {cup && (

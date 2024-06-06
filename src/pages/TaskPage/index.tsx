@@ -7,6 +7,7 @@ import Special from "../../components/Task/Special";
 import Leagues from "../../components/Task/Leagues";
 import "./tasks.css";
 import RefTasks from "../../components/Task/RefTasks";
+import { trophies } from "../../components/config/trophiesList";
 
 interface specialTypes {
   uuid: string;
@@ -24,9 +25,20 @@ interface TaskPageProps {
   referral: any;
   sendMessage: any;
   taskClickAnswer: any;
+  taskCheckResult: any;
+  userTrophy: number;
 }
 
-const TaskPage = ({ userBalance, special_tasks, leagues, referral, sendMessage, taskClickAnswer }: TaskPageProps) => {
+const TaskPage = ({
+  userBalance,
+  special_tasks,
+  leagues,
+  referral,
+  sendMessage,
+  taskClickAnswer,
+  taskCheckResult,
+  userTrophy,
+}: TaskPageProps) => {
   const [specials, setSpecials] = useState(false);
   const [league, setLeague] = useState(false);
   const [refTasks, setRefTasks] = useState(false);
@@ -35,16 +47,6 @@ const TaskPage = ({ userBalance, special_tasks, leagues, referral, sendMessage, 
   useEffect(() => {
     setSpecials(true);
   }, []);
-
-  // useEffect(() => {
-  //   setLoading(true);
-  //   socket.on("tasks", (data: any) => {
-  //     if (data) {
-  //       setTasks(data);
-  //       setLoading(false);
-  //     }
-  //   });
-  // }, []);
 
   const handleActiveTab = (val: string) => {
     if (val === "special") {
@@ -67,7 +69,12 @@ const TaskPage = ({ userBalance, special_tasks, leagues, referral, sendMessage, 
   return (
     <>
       <RootLayout bg_img={bgImg}>
-        <Balance cup={true} border={true} balance={userBalance} />
+        <Balance
+          cup={true}
+          border={true}
+          balance={userBalance}
+          user_trophy={trophies[userTrophy]?.name}
+        />
         <div className="border border-gray-500 p-0.5 rounded-lg w-full h-14 mt-5 grid grid-cols-3 gap-1">
           <Tab
             className={specials && "!bg-[#ef49c6cc]/60"}
@@ -93,19 +100,10 @@ const TaskPage = ({ userBalance, special_tasks, leagues, referral, sendMessage, 
               loadingCards={loading}
               sendMessage={sendMessage}
               taskClickAnswer={taskClickAnswer}
+              taskCheckResult={taskCheckResult}
             />
           )}
-          {/* {Leagues && (
-            <Leagues
-              userBalance={userBalance}
-              setUserBalance={setUserBalance}
-              unClaimedLeagues={unClaimedLeagues}
-              setUnClaimedLeagues={setUnClaimedLeagues}
-              claimableLeagues={claimableLeagues}
-              setClaimableLeagues={setClaimableLeagues}
-              socket={socket}
-            />
-          )} */}
+          {league && <Leagues leagues={leagues} />}
           {/* {refTasks && (
             <RefTasks
               userBalance={userBalance}

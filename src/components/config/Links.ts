@@ -2,8 +2,7 @@ export const links = [
   {
     src: "./images/change.png",
     name: "ref",
-    link: "/tap",
-    // link: "/ref",
+    link: "/ref",
   },
   {
     src: "./images/check-list.png",
