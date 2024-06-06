@@ -19,7 +19,7 @@ import ShowPopupDemo from "./ShowPopupDemo";
 import HapticFeedbackDemo from "./HapticFeedbackDemo";
 import ScanQrPopupDemo from "./ScanQrPopupDemo";
 import useBetaVersion from "./useBetaVersion";
-// import { useInitData } from "@vkruglikov/react-telegram-web-app";
+import { useInitData } from "@vkruglikov/react-telegram-web-app";
 
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import TapPage from "./pages/TapPage";
@@ -111,15 +111,12 @@ const root = ReactDOM.createRoot(
 );
 
 /*********************socket ********************/
-// const socket = io("https://socket.spxswap.com");
-// const socket = io("ws://192.168.88.166:8080");
-// const socket = "frrfr";
 
 const App = () => {
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
-  // const [initDataUnsafe] = useInitData();
-  // const telegramUserId = initDataUnsafe?.user?.id;
-  const telegramUserId = 123456;
+  const [initDataUnsafe] = useInitData();
+  const telegramUserId = initDataUnsafe?.user?.id;
+  // const telegramUserId = 123456;
 
   /*********************Initial states*****************/
   const [init, setInit] = useState(false);
@@ -307,7 +304,7 @@ const App = () => {
     onClose: () => console.log("WebSocket connection closed"),
     shouldReconnect: (closeEvent) => true, // Automatically reconnect on disconnection
   });
-  
+
   useEffect(() => {
     setInterval(() => {
       if (currentEnergy < maxEnergyLimit) {
