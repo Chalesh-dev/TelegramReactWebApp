@@ -50,7 +50,7 @@ const TaskPage = ({
   const [specials, setSpecials] = useState(false);
   const [league, setLeague] = useState(false);
   const [refTasks, setRefTasks] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [taskSpecialLeft, setTaskSpecialLeft] = useState(false);
 
   useEffect(() => {
     setSpecials(true);
@@ -74,6 +74,10 @@ const TaskPage = ({
     }
   };
 
+  useEffect(() => {
+    special_tasks?.map((task) => task?.claimed === false && setTaskSpecialLeft(true));
+  },[special_tasks])
+
   return (
     <>
       <RootLayout bg_img={bgImg}>
@@ -88,24 +92,25 @@ const TaskPage = ({
             className={specials && "!bg-[#ef49c6cc]/60"}
             onClick={() => handleActiveTab("special")}
             title={"Special"}
+            notComplete={taskSpecialLeft}
           />
           <Tab
             className={league && "!bg-[#ef49c6cc]/60"}
             onClick={() => handleActiveTab("leagues")}
             title={"Leagues"}
-            notComplete={true}
+            notComplete={leagues?.unclaimed?.length > 0}
           />
           <Tab
             className={refTasks && "!bg-[#ef49c6cc]/60"}
             onClick={() => handleActiveTab("ref_tasks")}
             title={"Ref Tasks"}
+            notComplete={referral?.unclaimed?.length > 0}
           />
         </div>
         <div className="container">
           {specials && (
             <Special
               specials={special_tasks}
-              loadingCards={loading}
               sendMessage={sendMessage}
               taskClickAnswer={taskClickAnswer}
               taskCheckResult={taskCheckResult}

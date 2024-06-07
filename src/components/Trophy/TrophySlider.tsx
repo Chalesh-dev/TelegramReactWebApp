@@ -1,7 +1,7 @@
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import { FindIndexByName, trophies } from "../config/trophiesList";
+import { trophies } from "../config/trophiesList";
 
 // Import Swiper styles
 import "swiper/css";
@@ -17,16 +17,23 @@ import ScoreBarComp from "../ScoreBarComp";
 // }
 
 interface TrophySliderTypes {
-  user_trophy: string;
-  userBalance: number;
+  user_trophy: number;
+  userTotalAmount: number;
 }
 
 // interface trophiesTypes {
 //   trophies: trophiesTypes[];
 // }
 
-const TrophySlider = ({ user_trophy, userBalance }: TrophySliderTypes) => {
-  const UserTrophyIndex = Number(FindIndexByName(user_trophy));
+const TrophySlider = ({ user_trophy, userTotalAmount }: TrophySliderTypes) => {
+  // const UserTrophyIndex = Number(FindIndexByName(user_trophy));
+  console.log('eerrrttt',userTotalAmount);
+  
+  let userAmount = userTotalAmount;
+  if (isNaN(userAmount)) {
+    userAmount = 0;
+  }
+  
   return (
     <Swiper
       modules={[Navigation]}
@@ -38,7 +45,7 @@ const TrophySlider = ({ user_trophy, userBalance }: TrophySliderTypes) => {
       navigation={true}
       slidesPerView={1}
       freeMode={true}
-      initialSlide={UserTrophyIndex}
+      initialSlide={user_trophy}
     >
       {trophies?.map((item, index) => (
         <SwiperSlide className="w-full h-full">
@@ -52,15 +59,15 @@ const TrophySlider = ({ user_trophy, userBalance }: TrophySliderTypes) => {
               </p>
             </div>
             <img src={trophies[index]?.src} alt={item?.name} />
-            {index !== UserTrophyIndex && (
+            {index !== user_trophy && (
               <h1 className="font-bold text-white text-2xl">
                 From {Number(item?.reward).toLocaleString()}
               </h1>
             )}
-            {index === UserTrophyIndex && (
+            {index === user_trophy && (
               <div className="w-full">
                 <ScoreBarComp
-                  present_value={userBalance}
+                  present_value={userAmount}
                   final_value={item?.reward}
                   values={true}
                 />

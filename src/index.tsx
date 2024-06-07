@@ -1,37 +1,33 @@
-import React, {
-  DispatchWithoutAction,
-  FC,
-  useCallback,
+import {
   useEffect,
   useRef,
   useState,
 } from "react";
 import ReactDOM from "react-dom/client";
 import {
-  useThemeParams,
   WebAppProvider,
 } from "@vkruglikov/react-telegram-web-app";
-import { ConfigProvider, theme } from "antd";
+// import { ConfigProvider, theme } from "antd";
 import "antd/dist/reset.css";
 import "./index.css";
-import MainButtonDemo from "./MainButtonDemo";
-import ShowPopupDemo from "./ShowPopupDemo";
-import HapticFeedbackDemo from "./HapticFeedbackDemo";
-import ScanQrPopupDemo from "./ScanQrPopupDemo";
-import useBetaVersion from "./useBetaVersion";
-// import { useInitData } from "@vkruglikov/react-telegram-web-app";
+// import MainButtonDemo from "./MainButtonDemo";
+// import ShowPopupDemo from "./ShowPopupDemo";
+// import HapticFeedbackDemo from "./HapticFeedbackDemo";
+// import ScanQrPopupDemo from "./ScanQrPopupDemo";
+// import useBetaVersion from "./useBetaVersion";
+
+
+import { useInitData } from "@vkruglikov/react-telegram-web-app";
 
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import TapPage from "./pages/TapPage";
-import { io } from "socket.io-client";
-import { SocketProvider } from "./context/SocketContext";
 import StatsPage from "./pages/StatsPage";
 import BoostPage from "./pages/BoostPage";
 import TaskPage from "./pages/TaskPage";
 import TrophyPage from "./pages/TrophyPage";
 import RefPage from "./pages/RefPage";
 
-import useWebSocket, { ReadyState } from "react-use-websocket";
+import useWebSocket from "react-use-websocket";
 import Modal from "./components/Modal";
 import { Robot } from "./components/Icons";
 
@@ -114,13 +110,9 @@ const root = ReactDOM.createRoot(
 
 const App = () => {
   const [smoothButtonsTransition, setSmoothButtonsTransition] = useState(false);
-  // const [initDataUnsafe] = useInitData();
-  // const telegramUserId = initDataUnsafe?.user?.id;
-  const telegramUserId = 123456;
-
-  /*********************Initial states*****************/
-  const [init, setInit] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [initDataUnsafe] = useInitData();
+  const telegramUserId = initDataUnsafe?.user?.id;
+  // const telegramUserId = 123456;
 
   /********************user balance ******************/
   const [userBalance, setUserBalance] = useState<number>(0);
@@ -189,13 +181,11 @@ const App = () => {
   /*********************End ******************************/
 
   /*********************sockets *************************/
-
   const WS_URL = "ws://apitest.spxswap.com:8080/" + telegramUserId;
   // const WS_URL = "ws://192.168.88.166:8080/" + telegramUserId;
-  //Public API that will echo messages sent to it back to the client
   const socketUrlRef = useRef(WS_URL);
 
-  const { sendMessage, lastJsonMessage } = useWebSocket(socketUrlRef.current, {
+  const { sendMessage } = useWebSocket(socketUrlRef.current, {
     onOpen: () => console.log("Connected to WebSocket"),
     onMessage: (message) => {
       try {
@@ -333,7 +323,7 @@ const App = () => {
         });
       }
     }, 1000);
-  }, [maxEnergyLimit, energyFillSpeed]);
+  }, [maxEnergyLimit, energyFillSpeed, currentEnergy]);
 
   const handleSubmitCoin = () => {
     setOpenEarningModal(false);
@@ -362,7 +352,6 @@ const App = () => {
             path="/tap"
             element={
               <TapPage
-                loading={loading}
                 sendMessage={sendMessage}
                 userBalance={userBalance}
                 guru={guru}
@@ -372,7 +361,6 @@ const App = () => {
                 maxEnergyLimit={maxEnergyLimit}
                 energyFillSpeed={energyFillSpeed}
                 currentEnergy={currentEnergy}
-                userTotalAmount={userTotalAmount}
               />
             }
           />
@@ -436,16 +424,15 @@ const App = () => {
               />
             }
           />
-          {/* <Route
+          <Route
             path="/trophy"
             element={
               <TrophyPage
                 user_trophy={userTrophy}
-                // leagues={}
-                userBalance={Number(userTotalAmount)}
+                userTotalAmount={Number(userTotalAmount)}
               />
             }
-          /> */}
+          />
           <Route
             path="/ref"
             element={
@@ -457,7 +444,6 @@ const App = () => {
             }
           />
         </Routes>
-        {/* </SocketProvider> */}
       </BrowserRouter>
     </WebAppProvider>
   );

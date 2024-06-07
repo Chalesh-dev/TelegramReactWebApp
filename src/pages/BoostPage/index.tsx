@@ -12,7 +12,6 @@ import Modal from "../../components/Modal";
 import "./Boosters.css";
 import RootLayout from "../../components/RootLayout/RootLayout";
 import DailyBooster from "../../components/DailyBooster";
-import CardLoading from "../../components/CardLoading";
 import Card from "../../components/Card";
 import { useNavigate } from "react-router-dom";
 
@@ -69,7 +68,6 @@ const BoostPage = ({
   const [openBot, setOpenBot] = useState(false);
   const [openGuru, setOpenGuru] = useState(false);
   const [openFullTank, setOpenFullTank] = useState(false);
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleOpenGuru = () => {
@@ -78,68 +76,36 @@ const BoostPage = ({
     }
   };
 
-  //todo: check sockets with ali
-  // socket.on("guru", (data: any) => {
-  //   setGuruRemains(data?.remain);
-  //   // setStartGuruTime(data?.guru_time);
-  // });
-
-  // socket.on("tank", (data: any) => {
-  //   setTankRemains(data?.remain);
-  //   setStartTankTime(data?.tank_time);
-  // });
-
-  // socket.on("multitap", (data: any) => {
-  //   setMultiLevel(data?.level);
-  //   setMultiScore(data?.score);
-  // });
-
-  // socket.on("energy_limit", (data: any) => {
-  //   setEnergyLimitLevel(data?.level);
-  //   setEnergyLimitScore(data?.score);
-  // });
-
-  // socket.on("recharging_speed", (data: any) => {
-  //   setRechargingLevel(data?.level);
-  //   setRechargingScore(data?.score);
-  // });
-
-  //todo: should i emit socket in functions bellow.
   const handleMulti = useCallback(() => {
     sendMessage(JSON.stringify({ topic: "upgrade", request: "multi_tap" }));
     setOpenMulti(false);
-  }, []);
+  }, [sendMessage]);
   const handleEnergyLimit = useCallback(() => {
     sendMessage(JSON.stringify({ topic: "upgrade", request: "limit" }));
     setOpenEnergy(false);
-  }, []);
+  }, [sendMessage]);
   const handleRecharging = useCallback(() => {
     sendMessage(JSON.stringify({ topic: "upgrade", request: "speed" }));
     setOpenRecharging(false);
-  }, []);
+  }, [sendMessage]);
   const handleBot = useCallback(() => {
     sendMessage(JSON.stringify({ topic: "upgrade", request: "bot" }));
     setOpenBot(false);
-  }, []);
+  }, [sendMessage]);
 
   const handleActiveGuru = useCallback(() => {
     sendMessage(JSON.stringify({ topic: "activate", request: "guru" }));
     setOpenGuru(false);
     navigate("/tap");
-  }, []);
+  }, [sendMessage, setOpenGuru, navigate]);
   const handleActiveTank = useCallback(() => {
     sendMessage(JSON.stringify({ topic: "activate", request: "refill" }));
     setOpenFullTank(false);
     navigate("/tap");
-  }, []);
+  }, [sendMessage, setOpenFullTank, navigate]);
 
   return (
-    <RootLayout
-      bg_img={bgImg}
-      // bg_radial={
-      //   "radial-gradient(ellipse at 30% 40%, rgb(224, 224, 65) -27%, transparent 40%)"
-      // }
-    >
+    <RootLayout bg_img={bgImg}>
       <Balance
         border={true}
         description={"Your Share balance"}
@@ -177,49 +143,52 @@ const BoostPage = ({
 
       <h1 className="text-white text-2xl my-2">Boosters:</h1>
       <div className="container--task">
-        {loading ? (
-          <>
-            <CardLoading />
-            <CardLoading />
-            <CardLoading />
-            <CardLoading />
-          </>
-        ) : (
-          <>
-            <Card
-              icon={<Hand color={boostMultiIsMax ? "gray" : "yellow"} size={28} />}
-              name={"Multitap"}
-              coin_num={boostMultiScore}
-              level={boostMultiLevel}
-              onClick={() => setOpenMulti(!boostMultiIsMax)}
-              isMax={boostMultiIsMax}
-            />
-            <Card
-              icon={<BatteryIcon color={boostEnergyLimitIsMax ? "gray" : "yellow"} size={28} />}
-              name={"Energy Limit"}
-              coin_num={boostEnergyLimitScore}
-              level={boostEnergyLimitLevel}
-              onClick={() => setOpenEnergy(!boostEnergyLimitIsMax)}
-              isMax={boostEnergyLimitIsMax}
-            />
-            <Card
-              icon={<FlashIcon color={boostRechargingIsMax ? "gray" : "yellow"} size={28} />}
-              name={"Recharging Speed"}
-              coin_num={boostRechargingScore}
-              level={boostRechargingLevel}
-              onClick={() => setOpenRecharging(!boostRechargingIsMax)}
-              isMax={boostRechargingIsMax}
-            />
-            <Card
-              icon={<Robot color={boostBotIsMax ? "gray" : "yellow"} size={28} />}
-              name={"Tap Bot"}
-              coin_num={boostBotScore}
-              level={boostBotLevel}
-              onClick={() => setOpenBot(!boostBotIsMax)}
-              isMax={boostBotIsMax}
-            />
-          </>
-        )}
+        <>
+          <Card
+            icon={
+              <Hand color={boostMultiIsMax ? "gray" : "yellow"} size={28} />
+            }
+            name={"Multitap"}
+            coin_num={boostMultiScore}
+            level={boostMultiLevel}
+            onClick={() => setOpenMulti(!boostMultiIsMax)}
+            isMax={boostMultiIsMax}
+          />
+          <Card
+            icon={
+              <BatteryIcon
+                color={boostEnergyLimitIsMax ? "gray" : "yellow"}
+                size={28}
+              />
+            }
+            name={"Energy Limit"}
+            coin_num={boostEnergyLimitScore}
+            level={boostEnergyLimitLevel}
+            onClick={() => setOpenEnergy(!boostEnergyLimitIsMax)}
+            isMax={boostEnergyLimitIsMax}
+          />
+          <Card
+            icon={
+              <FlashIcon
+                color={boostRechargingIsMax ? "gray" : "yellow"}
+                size={28}
+              />
+            }
+            name={"Recharging Speed"}
+            coin_num={boostRechargingScore}
+            level={boostRechargingLevel}
+            onClick={() => setOpenRecharging(!boostRechargingIsMax)}
+            isMax={boostRechargingIsMax}
+          />
+          <Card
+            icon={<Robot color={boostBotIsMax ? "gray" : "yellow"} size={28} />}
+            name={"Tap Bot"}
+            coin_num={boostBotScore}
+            level={boostBotLevel}
+            onClick={() => setOpenBot(!boostBotIsMax)}
+            isMax={boostBotIsMax}
+          />
+        </>
       </div>
 
       {/* Modals */}

@@ -3,7 +3,6 @@ import Card from "../Card";
 import { Check, TaskIcon } from "../Icons";
 import Modal from "../Modal";
 import CustomBtn from "../CustomBtn";
-import CardLoading from "../CardLoading";
 import { useNavigate } from "react-router-dom";
 
 interface specialsProps {
@@ -16,16 +15,13 @@ interface specialsProps {
 }
 
 interface SpecialTypes {
-  loadingCards: boolean;
   specials: specialsProps[];
   sendMessage: any;
   taskClickAnswer: string[];
   taskCheckResult: string[];
-  // setUserBalance: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const Special = ({
-  loadingCards,
   specials,
   sendMessage,
   taskClickAnswer,
@@ -37,14 +33,12 @@ const Special = ({
   const [claim, setClaim] = useState<string[]>([]);
   const navigate = useNavigate();
 
-  
-  //todo:ask ali why when click amd then back it got error
   useEffect(() => {
     if (taskClickAnswer && taskCheckResult && specialInfo) {
       setCheck(taskClickAnswer);
       setClaim(taskCheckResult);
     }
-  }, [openModal]);
+  }, [openModal, specialInfo, taskCheckResult, taskClickAnswer]);
 
   const handleGetTaskDetails = async (index: number) => {
     setSpecialInfo(specials[index]);
@@ -64,45 +58,40 @@ const Special = ({
       }
       sendMessage(JSON.stringify({ topic: "task pending", request: uuid }));
     },
-    []
+    [navigate, sendMessage]
   );
 
-  const handleTaskCheck = useCallback((taskId: string | undefined) => {
-    sendMessage(JSON.stringify({ topic: "task check", request: taskId }));
-  }, []);
+  const handleTaskCheck = useCallback(
+    (taskId: string | undefined) => {
+      sendMessage(JSON.stringify({ topic: "task check", request: taskId }));
+    },
+    [sendMessage]
+  );
 
-  const handleSubmitTask = useCallback((taskId: string | undefined) => {
-    sendMessage(JSON.stringify({ topic: "claim task", request: taskId }));
-    setOpenModal(false);
-  }, []);
+  const handleSubmitTask = useCallback(
+    (taskId: string | undefined) => {
+      sendMessage(JSON.stringify({ topic: "claim task", request: taskId }));
+      setOpenModal(false);
+    },
+    [sendMessage]
+  );
 
   return (
     <>
-      {loadingCards ? (
-        <>
-          <CardLoading />
-          <CardLoading />
-          <CardLoading />
-          <CardLoading />
-        </>
-      ) : (
-        <>
-          {specials?.map((item, index) => {
-            return (
-              <Card
-                key={index}
-                claimed={item?.claimed}
-                onClick={
-                  item?.claimed ? () => {} : () => handleGetTaskDetails(index)
-                }
-                icon={<TaskIcon />}
-                name={item?.title}
-                coin_num={Number(item?.reward)}
-              />
-            );
-          })}
-        </>
-      )}
+      {specials?.map((item, index) => {
+        return (
+          <Card
+            key={index}
+            claimed={item?.claimed}
+            onClick={
+              item?.claimed ? () => {} : () => handleGetTaskDetails(index)
+            }
+            icon={<TaskIcon />}
+            name={item?.title}
+            coin_num={Number(item?.reward)}
+          />
+        );
+      })}
       {openModal && (
         <Modal
           setOpenModal={setOpenModal}

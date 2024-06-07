@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import CardLoading from "../CardLoading";
 import CardBarComp from "./CardBarComp";
 import Modal from "../Modal";
 import { refs } from "../config/refList";
@@ -18,7 +17,6 @@ const RefTasks = ({
   balanceUpRef,
   setBalanceUpRef,
 }: refTypes) => {
-  const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const refIdRef = useRef(0);
 
@@ -27,7 +25,7 @@ const RefTasks = ({
       setOpenModal(true);
       setBalanceUpRef(0);
     }
-  }, [balanceUpRef]);
+  }, [balanceUpRef, setBalanceUpRef]);
 
   const handleClaim = async (id: number) => {
     sendMessage(JSON.stringify({ topic: "claim referral", request: id }));
@@ -35,53 +33,42 @@ const RefTasks = ({
   };
 
   return (
-    <div>
-      {loading ? (
-        <>
-          <CardLoading />
-          <CardLoading />
-          <CardLoading />
-          <CardLoading />
-        </>
-      ) : (
-        <>
-          {openModal && (
-            <Modal
-              bot={true}
-              setOpenModal={setOpenModal}
-              openModal={openModal}
-              icon={<ReferralsIcon />}
-              boostTitle={refs[refIdRef.current].name}
-              boostDescription={`congratulations, You got "${
-                refs[refIdRef.current].name
-              }" ❤️`}
-              botEarning={refs[refIdRef.current].reward}
-              onClick={() => setOpenModal(false)}
-            ></Modal>
-          )}
-          {referrals?.unclaimed?.map((item: number) => (
-            <CardBarComp
-              icon={<ReferralsIcon />}
-              title={refs[item]?.name}
-              price={Number(refs[item]?.reward).toLocaleString()}
-              disabled={false}
-              present_value={referrals?.total_referral}
-              final_value={refs[item]?.threshold}
-              onCLick={() => handleClaim(item)}
-            />
-          ))}
-          <CardBarComp
-            icon={<ReferralsIcon />}
-            // img={"/images/coin-icon.png"}
-            title={refs[referrals?.current]?.name}
-            price={Number(refs[referrals?.current]?.reward).toLocaleString()}
-            disabled={true}
-            present_value={referrals?.total_referral}
-            final_value={refs[referrals?.current]?.threshold}
-          />
-        </>
+    <>
+      {openModal && (
+        <Modal
+          bot={true}
+          setOpenModal={setOpenModal}
+          openModal={openModal}
+          icon={<ReferralsIcon />}
+          boostTitle={refs[refIdRef.current].name}
+          boostDescription={`congratulations, You got "${
+            refs[refIdRef.current].name
+          }" ❤️`}
+          botEarning={refs[refIdRef.current].reward}
+          onClick={() => setOpenModal(false)}
+        ></Modal>
       )}
-    </div>
+      {referrals?.unclaimed?.map((item: number) => (
+        <CardBarComp
+          icon={<ReferralsIcon />}
+          title={refs[item]?.name}
+          price={Number(refs[item]?.reward).toLocaleString()}
+          disabled={false}
+          present_value={referrals?.total_referral}
+          final_value={refs[item]?.threshold}
+          onCLick={() => handleClaim(item)}
+        />
+      ))}
+      <CardBarComp
+        icon={<ReferralsIcon />}
+        // img={"/images/coin-icon.png"}
+        title={refs[referrals?.current]?.name}
+        price={Number(refs[referrals?.current]?.reward).toLocaleString()}
+        disabled={true}
+        present_value={referrals?.total_referral}
+        final_value={refs[referrals?.current]?.threshold}
+      />
+    </>
   );
 };
 

@@ -3,22 +3,18 @@ import TrophySlider from "../../components/Trophy/TrophySlider";
 import RootLayout from "../../components/RootLayout/RootLayout";
 
 interface TrophyPageProps {
-  socket: any;
-  user_trophy: string;
-  userBalance: number;
+  user_trophy: number;
+  userTotalAmount: number;
 }
 
-const TrophyPage = ({ socket, user_trophy, userBalance }: TrophyPageProps) => {
+const TrophyPage = ({ user_trophy, userTotalAmount }: TrophyPageProps) => {
   return (
     <>
       <RootLayout
         bg_img={bgImg}
-        // bg_radial={
-        //   "radial-gradient(ellipse at 0% 40%, rgb(224, 224, 65) -7%, transparent 40%)"
-        // }
       >
         <div className="w-full h-full">
-          <TrophySlider user_trophy={user_trophy} userBalance={userBalance} />
+          <TrophySlider user_trophy={user_trophy} userTotalAmount={userTotalAmount} />
         </div>
       </RootLayout>
     </>

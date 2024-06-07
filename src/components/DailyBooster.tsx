@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import moment from "moment";
-import { number } from "@tma.js/sdk-react";
+import React, { useCallback, useEffect, useState } from "react";
 
 interface DailyBoosterTypes {
   icon: React.ReactElement;
@@ -19,9 +17,8 @@ const DailyBooster = ({
   max_boost,
   next_update,
 }: DailyBoosterTypes) => {
-  // const time = moment(next_update).format("hh:mm:ss");
 
-  const calculateTimeLeft = () => {
+  const calculateTimeLeft = useCallback(() => {
     const difference = next_update - Math.floor(Date.now() / 1000);
     let timeLeft = {
       hours: 0,
@@ -43,7 +40,7 @@ const DailyBooster = ({
       };
     }
     return timeLeft;
-  };
+  },[next_update]);
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
   useEffect(() => {
@@ -52,7 +49,7 @@ const DailyBooster = ({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [calculateTimeLeft]);
   return (
     <div
       onClick={onClick}
